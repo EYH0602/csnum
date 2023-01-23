@@ -19,28 +19,42 @@
 
 \section{Results}
 
+\begin{figure}[H]
+    \centering
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{img/report1/f1.png}
+	    \caption{$f_1(x) = \frac{1}{2}\sin((x - 1)^2)$}
+	    \label{fig:0}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	     \includegraphics[width=\textwidth]{img/report1/f2.png}
+	     \caption{$f_2(x) = 5^{-x} - 2$}
+	     \label{fig:1}
+	\end{subfigure}
+\end{figure}
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=.6\textwidth]{ex_figs/0.png}
-%     \caption{The first five fundamental waves computed by solving the Laplcain Eigenproblem}
-%     \label{fig:0}
-% \end{figure}
 
 
-% \begin{figure}[H]
-%     \centering
-%      \includegraphics[width=\textwidth]{ex_figs/1.png}
-%      \caption{Top:  $f(x) = 3\sin{\pi x} - 2 \sin(8 \pi x) + sin(11 \pi x)$, Bottom:Spectrogram of $f(x)$ }
-%      \label{fig:1}
-% \end{figure}
+\begin{figure}[H]
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	     \includegraphics[width=\textwidth]{img/report1/f1_err.png}
+	     \caption{Absolute Error of each methods approximating $f_1$ with respect to iteration.}
+	     \label{fig:2}   
+	\end{subfigure}
+	\hfill	
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	     \includegraphics[width=\textwidth]{img/report1/f2_err.png}
+	     \caption{Absolute Error of each methods approximating $f_2$ with respect to iteration.}
+	     \label{fig:3}   
+	\end{subfigure}
+\end{figure}
 
-% \begin{figure}[H]
-%     \centering
-%      \includegraphics[width=\textwidth]{ex_figs/2.png}
-%      \caption{Top:  $f(x) = (10^4) x^2 e^{-500 x}$, Bottom: Spectrogram of $f(x)$ }
-%      \label{fig:2}   
-% \end{figure}
+
 
 
 
@@ -55,6 +69,6 @@ On my personal integrity as a student and member of the UCD community, I have no
 \section{Appendix}
 
 \lstinputlisting[language=Python]{numerical_methods/root_finding_1_var.py}
-\lstinputlisting[language=Python]{main.py}
+\lstinputlisting[language=Python]{report1.py}
 
 \end{document}
