@@ -1,0 +1,64 @@
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow} % Multirow is for tables with multiple rows within one cell.
+\usepackage{booktabs} % For even nicer tables.
+\usepackage{graphicx} 
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{listings}
+
+% The fancyhdr package let's us create nice headers.
+\usepackage{fancyhdr}
+\pagestyle{fancy} 
+\fancyhf{} % This makes sure we do not have other information in our header or footer.
+
+\lhead{\footnotesize 128B Report}
+
+%\rhead works just like \lhead (you can also use \chead)
+\rhead{\footnotesize Yifeng He }
+
+% Similar commands work for the footer (\lfoot, \cfoot and \rfoot).
+% We want to put our page number in the center.
+\cfoot{\footnotesize \thepage} 
+
+\usepackage[table]{xcolor}
+% allow code segment, from Overleaf
+\usepackage[utf8]{inputenc}
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1, 1, 1}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},  
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=4
+}
+
+%"mystyle" code listing set
+\lstset{style=mystyle}
+% Get larger line spacing in table
+\newcommand{\tablespace}{\\[1.25mm]}
+\newcommand\Tstrut{\rule{0pt}{2.6ex}}         % = `top' strut
+\newcommand\tstrut{\rule{0pt}{2.0ex}}         % = `top' strut
+\newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}}   % = `bottom' strut
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
