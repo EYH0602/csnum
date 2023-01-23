@@ -1,0 +1,91 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow} % Multirow is for tables with multiple rows within one cell.
+\usepackage{booktabs} % For even nicer tables.
+\usepackage{graphicx} 
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{listings}
+
+% The fancyhdr package let's us create nice headers.
+\usepackage{fancyhdr}
+\pagestyle{fancy} 
+\fancyhf{} % This makes sure we do not have other information in our header or footer.
+
+\lhead{\footnotesize 128B Report}
+
+%\rhead works just like \lhead (you can also use \chead)
+\rhead{\footnotesize Yifeng He }
+
+% Similar commands work for the footer (\lfoot, \cfoot and \rfoot).
+% We want to put our page number in the center.
+\cfoot{\footnotesize \thepage} 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+
+
+\begin{center} % Everything within the center environment is centered.
+	{\Large \bf Coding Report 1} % <---- Don't forget to put in the right number
+	\vspace{2mm}
+	
+       
+	{\bf January 10, 2023}
+\end{center}  
+
+\vspace{0.4cm}
+
+
+\section{Problem Description}
+
+\section{Results}
+
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=.6\textwidth]{ex_figs/0.png}
+%     \caption{The first five fundamental waves computed by solving the Laplcain Eigenproblem}
+%     \label{fig:0}
+% \end{figure}
+
+
+% \begin{figure}[H]
+%     \centering
+%      \includegraphics[width=\textwidth]{ex_figs/1.png}
+%      \caption{Top:  $f(x) = 3\sin{\pi x} - 2 \sin(8 \pi x) + sin(11 \pi x)$, Bottom:Spectrogram of $f(x)$ }
+%      \label{fig:1}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%      \includegraphics[width=\textwidth]{ex_figs/2.png}
+%      \caption{Top:  $f(x) = (10^4) x^2 e^{-500 x}$, Bottom: Spectrogram of $f(x)$ }
+%      \label{fig:2}   
+% \end{figure}
+
+
+
+\section{Collaboration}
+No collaboration on this project.
+
+
+\section{Academic Integrity}
+On my personal integrity as a student and member of the UCD community, I have not given nor received any unauthorized assistance on this assignment.
+
+
+\section{Appendix}
+
+\lstinputlisting[language=Python]{numerical_methods/root_finding_1_var.py}
+\lstinputlisting[language=Python]{main.py}
+
+\end{document}
