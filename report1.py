@@ -1,6 +1,6 @@
 # %%
 import pandas as pd
-import jax.numpy as np
+import jax.numpy as jnp
 import matplotlib.pyplot as plt
 from numerical_methods.root_finding_1_var import (
     Bisection,
@@ -11,30 +11,30 @@ from numerical_methods.root_finding_1_var import (
 
 
 def f1(x):
-    return np.sin(np.power((x - 1), 2)) / 2
+    return jnp.sin(jnp.power((x - 1), 2)) / 2
 
 
 def f2(x):
-    return np.power(5, -1 * x) - 2
+    return jnp.power(5, -1 * x) - 2
 
 
 def plot_fn(
     f, r=(0, 1), title="f(x)", xlabel="x", ylabel="f(x)"
 ):
     plt.figure()
-    x = np.linspace(*r)
+    x = jnp.linspace(*r)
     y = f(x)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
-    plt.plot(x, np.zeros(np.shape(x)))
+    plt.plot(x, jnp.zeros(jnp.shape(x)))
     plt.plot(x, y)
 
 
 def to_abs_err(df, real_root):
     return df.applymap(
-        lambda x: np.abs(real_root - x)
-    ).astype(np.float64)
+        lambda x: jnp.abs(real_root - x)
+    ).astype(jnp.float64)
 
 
 # %%
@@ -47,7 +47,7 @@ f1_res = pd.DataFrame(
     {
         "Bisection": Bisection(f1, (0.8, 1)),
         "Fixed_Point": Fixed_Point(
-            f1, 3, g=lambda x: np.sqrt(np.arcsin(0)) + 1
+            f1, 3, g=lambda x: jnp.sqrt(jnp.arcsin(0)) + 1
         ),
         "Newton": Newton(f1, 0.8),
         "Secant": Secant(f1, (0.8, 0.9)),
@@ -94,7 +94,7 @@ f2_res
 
 
 # %%
-f2_err = to_abs_err(f2_res, -np.log(2) / np.log(5))
+f2_err = to_abs_err(f2_res, -jnp.log(2) / jnp.log(5))
 
 
 # %%
