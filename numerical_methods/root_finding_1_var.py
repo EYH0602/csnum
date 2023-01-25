@@ -106,3 +106,16 @@ def Secant(f: Cts, p: Tuple[float, float], eps=1e-4, max_iter=15):
         return p2
 
     return General_Iter_Method(succ, p0_org, eps, max_iter, method="Secant Method")
+
+
+def Steffensen(f: Cts, p: float, tol=1e-4, max_iter=15, g: Cts = None):
+    if g is None:
+        g = lambda x: x - f(x)
+
+    def succ(ps):
+        p0 = ps[-1]
+        p1 = g(p0)
+        p2 = g(p1)
+        return p0 - (p1 - p0)**2 / (p2 - 2*p1 + p0)
+    
+    return General_Iter_Method(succ, p, tol, max_iter, method="Steffensen's Method")
