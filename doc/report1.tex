@@ -19,7 +19,7 @@
 This report demonstrates 4 different methods of finding root on functions with one variable.
 The methods are Bisection, Fixed Point, Newton, and Secant method.
 Given a function $f \in C[a, b]$, 
-we apply the above 4 methods to approximate a sequence of $p_n$ to the real root $p$.
+we apply the above 4 methods to approximate a sequence of $p_n$ to the true root $p$.
 
 For each method on each function,
 we set the maximum iteration to 15 and threshold to $1 \times 10^{-4}$,
@@ -45,7 +45,7 @@ we said the algorithm converged and stop iterating.
 	     \caption{$f_2(x) = 5^{-x} - 2$}
 	     \label{fig:1}
 	\end{subfigure}
-	\caption{Plots showing the true roots of $f_1$ and $f_2$.}
+	\caption{Plots showing the true root of $f_1$ and $f_2$.}
 \end{figure}
 
 
@@ -108,7 +108,7 @@ and then chose 3 as the initial $p$, which is just a random guess.
 We chose (-2, 2) as interval for Bisection method since the true root is around 0.5.
 The the initial guess for Newton's and Secant method,
 -2 and (-2, -1),
-are taken from ke lower end of the interval.
+are taken from the lower end of this interval.
 For Fixed Point method, we just used the default transformation
 $$
 g_2(x) = x - f_2(x)
@@ -162,8 +162,10 @@ On my personal integrity as a student and member of the UCD community, I have no
 
 
 \section{Appendix}
-
-\lstinputlisting[language=Python]{numerical_methods/root_finding_1_var.py}
-\lstinputlisting[language=Python]{report1.py}
+Note that there are two source files used for this report,
+each's name are stated in the title of the file listing.
+% numerical_methods\/root_finding_1_var.py
+\lstinputlisting[language=Python, title=\url{numerical_methods/root_finding_1_var.py}]{../numerical_methods/root_finding_1_var.py}
+\lstinputlisting[language=Python, title=main.py]{report1.py}
 
 \end{document}
