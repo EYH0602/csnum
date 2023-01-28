@@ -130,3 +130,9 @@ dmypy.json
 
 *.pdf
 img
+
+# tex
+*.aux
+*.*latex*
+*.fls
+*.xdv
