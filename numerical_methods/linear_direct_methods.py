@@ -52,7 +52,7 @@ def gaussian_elimination(
 
     A = np.ndarray.copy(A)
     n = A.shape[0]
-    m = np.zeros(A.shape)
+    m = np.identity(A.shape[0])
 
     # elimination process
     for i in range(n - 1):
@@ -98,7 +98,7 @@ def back_substitution(mat: np.matrix) -> np.array:
     n = mat.shape[1]
     # split input mat to make indexing easier
     A = mat[:, :-1]
-    b = mat[:, -1]
+    b = mat[:, -1].reshape((mat.shape[0], 1))
 
     x[-1, :] = b[-1, :] / A[-1, -1]
     for i in range(n - 2, -1, -1):
@@ -113,7 +113,7 @@ def lu_decomposition(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
         A (np.matrix): square matrix to decompose
 
     Returns:
-        Maybe[Tuple[np.matrix, np.matrix]]: (L, U)
+        Maybe[Tuple[np.matrix, np.matrix]]: (U, L)
     """
     if A is None:
         return Nothing
