@@ -4,6 +4,7 @@ import numpy as np
 from numerical_methods.linear_direct_methods import (
     gaussian_elimination,
     lu_decomposition,
+    back_substitution,
 )
 
 
@@ -30,6 +31,13 @@ class TestRoot1Var(unittest.TestCase):
 
         self.assertTrue(np.all(np.equal(l, a)))
         self.assertTrue(np.all(np.equal(u, m)))
+
+    def test_back_substitution(self):
+        A = np.matrix([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
+        b = np.array([3, 2, 1]).reshape((3, 1))
+
+        mat, _ = gaussian_elimination(np.hstack((A, b))).unwrap()
+        self.assertTrue(np.allclose(back_substitution(mat), np.linalg.solve(A, b)))
 
 
 if __name__ == "__main__":

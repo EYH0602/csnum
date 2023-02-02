@@ -40,7 +40,7 @@ def gaussian_elimination(
 ) -> Maybe[Tuple[np.matrix, np.matrix]]:
     """Gaussian Elimination without backward substitution
     Args:
-        A (np.matrix): square matrix to decompose
+        A (np.matrix): matrix to do gaussian elimination
         pivot (str, optional): pivot policy in ["none", "partial"]. Defaults to "none".
 
     Returns:
@@ -48,9 +48,6 @@ def gaussian_elimination(
     """
 
     if A is None:
-        return Nothing
-    # A has to be a square matrix to do gaussian elimination
-    if A.shape[0] != A.shape[1]:
         return Nothing
 
     A = np.ndarray.copy(A)
@@ -86,8 +83,27 @@ def gaussian_elimination(
     return Some((A, m))
 
 
-def back_substitution(A):
-    pass
+def back_substitution(mat: np.matrix) -> np.array:
+    """back substitution step of gaussian elimination,
+    this is assumed to be used upon success of `gaussian_elimination`
+
+    Args:
+        mat (np.matrix): matrix from result of gaussian elimination
+
+    Returns:
+        np.array: solved values
+    """
+
+    x = np.zeros((mat.shape[0], 1))
+    n = mat.shape[1]
+    # split input mat to make indexing easier
+    A = mat[:, :-1]
+    b = mat[:, -1]
+
+    x[-1, :] = b[-1, :] / A[-1, -1]
+    for i in range(n - 2, -1, -1):
+        x[i, :] = (b[i, :] - A[i, i + 1 :] @ x[i + 1 :, :]) / A[i, i]
+    return x
 
 
 def lu_decomposition(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
@@ -99,6 +115,11 @@ def lu_decomposition(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     Returns:
         Maybe[Tuple[np.matrix, np.matrix]]: (L, U)
     """
+    if A is None:
+        return Nothing
+    # only decompose square matrix
+    if A.shape[0] != A.shape[1]:
+        return Nothing
     return gaussian_elimination(A, pivot="none")
 
 

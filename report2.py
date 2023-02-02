@@ -7,9 +7,12 @@ from numerical_methods.linear_direct_methods import (
 )
 
 A = np.matrix([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
-b = np.array([3, 2, 1])
-
+b = np.array([3, 2, 1]).reshape((3, 1))
 L, U = lu_decomposition(A).unwrap()
 print(L)
 print(U)
-print(gaussian_elimination(A, "partial").unwrap()[0])
+
+
+# with back substitution
+mat, _ = gaussian_elimination(np.hstack((A, b))).unwrap()
+print(back_substitution(mat))
