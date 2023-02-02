@@ -4,6 +4,7 @@ from numerical_methods.linear_direct_methods import (
     gaussian_elimination,
     back_substitution,
     lu_decomposition,
+    lu_solve,
 )
 
 A = np.matrix([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
@@ -16,3 +17,6 @@ print(U)
 # with back substitution
 mat, _ = gaussian_elimination(np.hstack((A, b))).unwrap()
 print(back_substitution(mat))
+
+
+print(lu_solve(L, U, b))

@@ -5,6 +5,7 @@ from numerical_methods.linear_direct_methods import (
     gaussian_elimination,
     lu_decomposition,
     back_substitution,
+    lu_solve,
 )
 
 
@@ -38,6 +39,15 @@ class TestRoot1Var(unittest.TestCase):
 
         mat, _ = gaussian_elimination(np.hstack((A, b))).unwrap()
         self.assertTrue(np.allclose(back_substitution(mat), np.linalg.solve(A, b)))
+
+    def test_lu_solve(self):
+        A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
+        b = np.array([3, 2, 1]).reshape((3, 1))
+
+        u, l = lu_decomposition(A).unwrap()
+        self.assertTrue(
+            np.allclose(lu_solve(l, u, b), np.linalg.solve(A, b))
+        )
 
 
 if __name__ == "__main__":

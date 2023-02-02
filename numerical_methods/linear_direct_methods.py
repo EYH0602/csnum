@@ -123,5 +123,18 @@ def lu_decomposition(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     return gaussian_elimination(A, pivot="none")
 
 
-def solve(A, b):
-    pass
+def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
+    """solve linear system with output from LU factorization
+    this is assumed to be used upon the succuss of `lu_decomposition`
+
+    Args:
+        L (np.matrix): L matrix
+        U (np.matrix): U matrix
+        b (np.array): value vector that linear system equals
+
+    Returns:
+        np.array: solved x unknown variables
+    """
+    y = np.linalg.solve(L, b)
+    x = np.linalg.solve(U, y)
+    return x
