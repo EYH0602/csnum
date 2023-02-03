@@ -123,7 +123,23 @@ def lu_decomposition(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     return gaussian_elimination(A, pivot="none")
 
 
-def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
+def gauss_solve(A: np.matrix, b: np.array) -> Maybe[np.array]:
+    """solve linear system Ax = b by gaussian elimination and back substitution.
+    result depends on the success of gaussian_elimination
+
+    Args:
+        A (np.matrix): coefficient matrix
+        b (np.array): value vector
+
+    Returns:
+        Maybe[np.array]: result
+    """
+    return gaussian_elimination(np.hstack((A, b))).map(
+        lambda p: back_substitution(p[0])
+    )
+
+
+def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> Maybe[np.array]:
     """solve linear system with output from LU factorization
     this is assumed to be used upon the succuss of `lu_decomposition`
 
@@ -135,6 +151,8 @@ def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
     Returns:
         np.array: solved x unknown variables
     """
-    y = np.linalg.solve(L, b)
-    x = np.linalg.solve(U, y)
-    return x
+    match gauss_solve(L, b):
+        case Some(y):
+            return gauss_solve(U, y)
+        case Nothing:
+            return Nothing

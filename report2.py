@@ -18,5 +18,4 @@ print(U)
 mat, _ = gaussian_elimination(np.hstack((A, b))).unwrap()
 print(back_substitution(mat))
 
-
-print(lu_solve(L, U, b))
+print(lu_solve(L, U, b).unwrap())
