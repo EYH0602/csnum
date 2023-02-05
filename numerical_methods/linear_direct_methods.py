@@ -83,7 +83,7 @@ def gaussian_elimination(
     return Some((A, m))
 
 
-def back_substitution(mat: np.matrix) -> np.array:
+def back_substitution(A: np.matrix, b: np.array) -> np.array:
     """back substitution step of gaussian elimination,
     this is assumed to be used upon success of `gaussian_elimination`
 
@@ -94,15 +94,34 @@ def back_substitution(mat: np.matrix) -> np.array:
         np.array: solved values
     """
 
-    x = np.zeros((mat.shape[0], 1))
-    n = mat.shape[1]
-    # split input mat to make indexing easier
-    A = mat[:, :-1]
-    b = mat[:, -1].reshape((mat.shape[0], 1))
+    n = A.shape[0]
+    x = np.zeros(shape=b.shape)
 
     x[-1, :] = b[-1, :] / A[-1, -1]
     for i in range(n - 2, -1, -1):
         x[i, :] = (b[i, :] - A[i, i + 1 :] @ x[i + 1 :, :]) / A[i, i]
+
+    return x
+
+
+def forward_substitution(A: np.matrix, b: np.array) -> np.array:
+    """forward substitution step,
+    this is assumed to be used upon success of `gaussian_elimination`
+
+    Args:
+        mat (np.matrix): a square matrix
+
+    Returns:
+        np.array: solved values
+    """
+
+    n = A.shape[0]
+    x = np.zeros(shape=b.shape)
+
+    x[0, :] = b[0, :] / A[0, 0]
+    for i in range(1, n):
+        x[i, :] = (b[i, :] - A[i, :i] @ x[:i, :]) / A[i, i]
+
     return x
 
 
@@ -135,11 +154,11 @@ def gauss_solve(A: np.matrix, b: np.array) -> Maybe[np.array]:
         Maybe[np.array]: result
     """
     return gaussian_elimination(np.hstack((A, b))).map(
-        lambda p: back_substitution(p[0])
+        lambda p: back_substitution(p[0][:, :-1], p[0][:, [-1]])
     )
 
 
-def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> Maybe[np.array]:
+def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
     """solve linear system with output from LU factorization
     this is assumed to be used upon the succuss of `lu_decomposition`
 
@@ -151,8 +170,6 @@ def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> Maybe[np.array]:
     Returns:
         np.array: solved x unknown variables
     """
-    match gauss_solve(L, b):
-        case Some(y):
-            return gauss_solve(U, y)
-        case Nothing:
-            return Nothing
+    y = forward_substitution(L, b)
+    x = back_substitution(U, y)
+    return x
