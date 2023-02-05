@@ -3,8 +3,7 @@
 to make a pdf report, run in this directory
 
 ```sh
-mkdir -p img/<report>
-python3 <report>.py
-make <report>
-make clean
+make report[1-5]
 ```
+
+each ipython notebook (and $\LaTeX$) here is also a example of how to use the package.

@@ -13,5 +13,5 @@ pip3 install -r requirements.txt
 
 ```
 cd doc
-make <report_name>
+make report[1-5]
 ```
