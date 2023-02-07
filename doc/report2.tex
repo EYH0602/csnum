@@ -1,0 +1,155 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{CodeReport}
+
+\begin{document}
+
+
+\begin{center} % Everything within the center environment is centered.
+	{\Large \bf Coding Report 2} % <---- Don't forget to put in the right number
+	\vspace{2mm}
+\end{center}  
+
+\vspace{0.4cm}
+
+
+\section{Problem Description}
+In this coding report,
+we explore the implementation and performance of gaussian elimination and LU factorization.
+We first demonstrate the methods by solving linear systems from homework 2
+$$
+\begin{bmatrix}
+	2 & 4 & 5 \\
+	7 & 6 & 5 \\
+	9 & 11 & 3
+\end{bmatrix}
+x = 
+\begin{bmatrix}
+	3 \\
+	2 \\
+	1
+\end{bmatrix}.
+$$
+
+Then we compare two methods:
+\begin{enumerate}
+	\item gaussian elimination solve with back substitution (GE)
+	\item LU factorization then solve with forward and back substitution (LU)
+\end{enumerate}
+on size $n = 50, 100, 250, 500$ matrices.
+The linear system $Ax = b$ to solve will have the following setup
+$$
+A = 5\times I + R
+$$
+where random entries $r_{ij}, b_{ij} \sim N(0, 1)$.
+We record the errors of two methods in a table and then plot their execution time v.s. $n$.
+
+\section{Results}
+
+\subsection{Homework Problem}
+By using LU factorization method on $A$, we get
+$$
+L = \begin{bmatrix}
+	1 & 0 & 0 \\
+	3.5 & 1 & 0 \\
+	4.5 & 0.875 & 1 
+\end{bmatrix} \\
+U = \begin{bmatrix}
+	2 & 4 & 5 \\
+	0 & -8 & -12.5 \\
+	0 & 0 & -8.5625
+\end{bmatrix}
+$$
+which are the same as the results from homework.
+
+By calling `gauss\_solve' and `lu\_solve',
+both methods get the same result for 8 digits
+$$
+x = \begin{bmatrix}
+	-& 0.25547445 \\
+	 & 0.13868613 \\
+	 & 0.59124088
+\end{bmatrix}.
+$$
+
+\subsection{Comparison}
+To make the comparison fairer,
+for each $n$ we call `gauss\_solve' and `lu\_solve' $10$ times
+and record the average error and execution time.
+
+\begin{table}[H]
+\begin{center}
+	\begin{tabular}{lrrr}
+	\toprule
+	{}  &            GE &            LU \\
+	\midrule
+	 50 &  1.621020e-11 &  1.602339e-11 \\
+	100 &  1.292846e-11 &  7.911123e-12 \\
+	250 &  8.170815e-10 &  7.128272e-10 \\
+	500 &  1.466036e-09 &  2.159379e-09 \\
+	\bottomrule
+	\end{tabular}
+	\caption{Errors of $\| Ax - b\|_{2}$ for GE and LU methods}
+\end{center}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+     \includegraphics[width=0.7\textwidth]{img/report2_cell_10_output_1.png}
+     \caption{Execution time to solve $Ax=b$ for GE and LU v.s. $n$}
+     \label{fig:1}   
+\end{figure}
+
+From the above table and graph, we can see that the solution produced by LU
+has larger errors than using gaussian elimination and back substitution directly.
+However, when the size of the matrix goes up, LU solve is faster than ge solver.
+
+\subsection{Experiments with matrix family $\hat{A} = R$}
+
+\begin{table}[H]
+\begin{center}	
+	\begin{tabular}{lrrr}
+	\toprule
+	{} &             GE &            LU \\
+	\midrule
+	 50 &  3.564803e-11 &  3.145187e-11 \\
+	100 &  4.906939e-11 &  2.390745e-11 \\
+	250 &  1.890665e-09 &  1.223007e-09 \\
+	500 &  1.799276e-09 &  1.455843e-09 \\
+	\bottomrule
+	\end{tabular}
+	\caption{Errors of $\| \hat{A}x - b\|_{2}$ for GE and LU methods}
+\end{center}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+     \includegraphics[width=0.7\textwidth]{img/report2_cell_15_output_1.png}
+     \caption{Execution time to solve $\hat{A}x=b$ for GE and LU v.s. $n$}
+     \label{fig:2}   
+\end{figure}
+
+In this case,
+we can see that errors of LU is smaller than GE,
+and LU is still faster.
+
+\section{Collaboration}
+No collaboration on this project.
+
+
+\section{Academic Integrity}
+On my personal integrity as a student and member of the UCD community, I have not given nor received any unauthorized assistance on this assignment.
+
+
+\section{Appendix}
+Note that there are two source files used for this report,
+each's name are stated in the title of the file listing.
+For the following code, please use \textbf{python3.10} and have the following packages installed
+\begin{itemize}
+	\item numpy
+	\item returns.
+\end{itemize}
+
+\lstinputlisting[language=Python, title=\url{numerical_methods/linear_direct_methods.py}]{../numerical_methods/linear_direct_methods.py}
+\lstinputlisting[language=Python, title=main.py]{report2.py}
+
+\end{document}
