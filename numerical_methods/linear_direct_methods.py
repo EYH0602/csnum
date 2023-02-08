@@ -1,4 +1,3 @@
-import jax.numpy as jnp
 import numpy as np
 from returns.maybe import Maybe, Nothing, Some
 from typing import Tuple
