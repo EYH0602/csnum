@@ -9,8 +9,6 @@
 	\vspace{2mm}
 \end{center}  
 
-\vspace{0.4cm}
-
 
 \section{Problem Description}
 In this coding report,
@@ -65,9 +63,9 @@ By calling `gauss\_solve' and `lu\_solve',
 both methods get the same result for 8 digits
 $$
 x = \begin{bmatrix}
-	-& 0.25547445 \\
-	 & 0.13868613 \\
-	 & 0.59124088
+	-0.25547445  \\
+	0.13868613  \\
+	0.59124088
 \end{bmatrix}.
 $$
 
@@ -75,6 +73,8 @@ $$
 To make the comparison fairer,
 for each $n$ we call `gauss\_solve' and `lu\_solve' $10$ times
 and record the average error and execution time.
+Since LU provides the option to solve with same $A$ matrix and different $b$,
+we also record the time for using the different and same $A$ matrix on two methods.
 
 \begin{table}[H]
 \begin{center}
@@ -92,18 +92,33 @@ and record the average error and execution time.
 \end{center}
 \end{table}
 
+
 \begin{figure}[H]
     \centering
-     \includegraphics[width=0.7\textwidth]{img/report2_cell_10_output_1.png}
-     \caption{Execution time to solve $Ax=b$ for GE and LU v.s. $n$}
-     \label{fig:1}   
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{img/report2_cell_12_output_1.png}
+	    \label{fig:0}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	     \includegraphics[width=\textwidth]{img/report2_cell_15_output_1.png}
+	     \label{fig:1}
+	\end{subfigure}
+	\caption{Execution time of GE and LU with different (left) and same (right) $A$.}
 \end{figure}
+
+
 
 From the above table and graph, we can see that the solution produced by LU
 has larger errors than using gaussian elimination and back substitution directly.
-However, when the size of the matrix goes up, LU solve is faster than ge solver.
+However, when the size of the matrix goes up, LU solves the linear system a litter faster than GE.
+If we use the same $A$ matrix for the $10$ repetition and only solve with different $b$,
+we can see that LU is much faster than GE
+since it only do gaussian elimination the first time and the rest is just forward and backward substitution.
 
-\subsection{Experiments with matrix family $\hat{A} = R$}
+\subsection{Experiments on matrix family $\hat{A} = R$}
 
 \begin{table}[H]
 \begin{center}	
@@ -123,14 +138,23 @@ However, when the size of the matrix goes up, LU solve is faster than ge solver.
 
 \begin{figure}[H]
     \centering
-     \includegraphics[width=0.7\textwidth]{img/report2_cell_15_output_1.png}
-     \caption{Execution time to solve $\hat{A}x=b$ for GE and LU v.s. $n$}
-     \label{fig:2}   
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{img/report2_cell_12_output_1.png}
+	    \label{fig:2}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.49\textwidth}
+	    \centering
+	     \includegraphics[width=\textwidth]{img/report2_cell_15_output_1.png}
+	     \label{fig:3}
+	\end{subfigure}
+	\caption{Execution time of GE and LU with different (left) and same (right) $\hat{A}$.}
 \end{figure}
 
-In this case,
-we can see that errors of LU is smaller than GE,
-and LU is still faster.
+In this case, we can see that errors of LU is smaller than GE.
+In terms of execution time,
+solving $\hat{A}$ shows similar trends as solving $A$.
 
 \section{Collaboration}
 No collaboration on this project.
