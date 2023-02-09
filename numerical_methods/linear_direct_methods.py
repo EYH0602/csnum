@@ -191,3 +191,39 @@ def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
     y = forward_substitution(L, b)
     x = back_substitution(U, y)
     return x
+
+
+def is_positive_definite(x: np.matrix) -> bool:
+    return np.all(np.linalg.eigvals(x) > 0)
+
+
+def ldl_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
+    """ldl factorization
+
+    Args:
+        A (np.matrix): positive definite matrix to factorize
+
+    Returns:
+        Maybe[Tuple[np.matrix, np.matrix]]: L, D
+    """
+    if A is None:
+        return Nothing
+    if not is_positive_definite(A):
+        return Nothing
+
+    n = A.shape[0]
+    L = np.identity(n)
+    d = np.zeros(shape=(A.shape[0], 1))
+    v = np.zeros(shape=(A.shape[0], 1))
+
+    for i in range(n):
+        # for j in 1..i-1, set v_i = l_ij * d_j
+        v[:i, :] = np.transpose(L[i, :i] * d[:i].T)
+        # d_i = a_ii - sum l_ij v_j
+        d[i] = A[i, i] - L[i, :i] @ v[:i, :]
+        # for j in i+1..n, set l_ji = (a_ji - sum l_jk v_k) / d_i
+        L[i + 1 :, [i]] = (A[i + 1 :, [i]] - L[i + 1 :, :i] @ v[:i, :]) / d[i]
+
+    D = np.zeros(shape=A.shape)
+    np.fill_diagonal(D, d)
+    return Some((L, D))
