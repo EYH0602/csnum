@@ -35,7 +35,7 @@ class TestRoot1Var(unittest.TestCase):
         self.assertTrue(np.all(np.equal(u, m)))
 
     def test_back_substitution(self):
-        A = np.matrix([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
+        A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
         b = np.array([3, 2, 1]).reshape((3, 1))
 
         mat, _ = gaussian_elimination(np.hstack((A, b))).unwrap()
@@ -46,9 +46,8 @@ class TestRoot1Var(unittest.TestCase):
         )
 
     def test_gauss_solve(self):
-        n = 5
-        A = 5 * np.eye(n) + np.random.normal(size=(n, n))
-        b = np.random.normal(size=(n, 1))
+        A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
+        b = np.array([3, 2, 1]).reshape((3, 1))
 
         def test(p):
             return np.allclose(
@@ -58,6 +57,7 @@ class TestRoot1Var(unittest.TestCase):
         self.assertTrue(test("none"))
         self.assertTrue(test("partial"))
         self.assertTrue(test("scaled_partial"))
+        self.assertTrue(test("complete"))
 
     def test_lu_solve(self):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
