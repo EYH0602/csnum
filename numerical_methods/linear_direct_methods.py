@@ -3,7 +3,7 @@ from returns.maybe import Maybe, Nothing, Some
 from typing import Tuple
 
 
-def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[int]:
+def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
     """compute p for gaussian elimination
 
     Args:
@@ -16,6 +16,7 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[int]:
     """
     xs = A[i:, i]
     p = i + 1
+    q = i
 
     match pivot:
         case "none":
@@ -28,10 +29,15 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[int]:
         case "partial":
             # find max entry
             p = np.argmax(xs) + i
+        case "scaled_partial":
+            s = np.max(np.abs(A[i, :]))  # scale factor
+            if s == 0:
+                return None
+            p = np.argmax(xs / s) + i
         case _:
             return Nothing
 
-    return Some(p)
+    return Some((p, q))
 
 
 def gaussian_elimination(
@@ -40,7 +46,8 @@ def gaussian_elimination(
     """Gaussian Elimination without backward substitution
     Args:
         A (np.matrix): matrix to do gaussian elimination
-        pivot (str, optional): pivot policy in ["none", "partial"]. Defaults to "none".
+        pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial"].
+            Defaults to "none".
 
     Returns:
         Maybe[Tuple[np.matrix, np.matrix]]: (elimination result, multipliers used)
@@ -59,16 +66,20 @@ def gaussian_elimination(
         # search for valid p based on pivoting
         p = i + 1
         match _select_p(A, i, pivot):
-            case Some(next_p):
+            case Some((next_p, next_q)):
                 p = next_p
+                q = next_q
             case Nothing:
                 return Nothing
         # no unique solution
         if A[p, i] == 0:
             return Nothing
-        # swap
+        # swap row
         if i != p:
             A[[p, i]] = A[[i, p]]
+        # swap column
+        if i != q:
+            A[:, [q, i]] = A[:, [i, q]]
 
         # column elimination
         for j in range(i + 1, n):
@@ -141,18 +152,21 @@ def lu_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     return gaussian_elimination(A, pivot="none")
 
 
-def gauss_solve(A: np.matrix, b: np.array) -> Maybe[np.array]:
+def gauss_solve(A: np.matrix, b: np.array, pivot: str = "none") -> Maybe[np.array]:
     """solve linear system Ax = b by gaussian elimination and back substitution.
     result depends on the success of gaussian_elimination
 
     Args:
         A (np.matrix): coefficient matrix
         b (np.array): value vector
+        pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial"].
+            Defaults to "none".
+
 
     Returns:
         Maybe[np.array]: result
     """
-    return gaussian_elimination(np.hstack((A, b))).map(
+    return gaussian_elimination(np.hstack((A, b)), pivot=pivot).map(
         lambda p: back_substitution(p[0][:, :-1], p[0][:, [-1]])
     )
 
