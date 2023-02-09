@@ -27,7 +27,7 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[int]:
             p = np.min(idx) + i  # NOTE i is the offset
         case "partial":
             # find max entry
-            p = np.argmax(xs)
+            p = np.argmax(xs) + i
         case _:
             return Nothing
 
