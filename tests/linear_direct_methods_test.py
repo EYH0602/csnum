@@ -7,6 +7,7 @@ from numerical_methods.linear_direct_methods import (
     back_substitution,
     lu_solve,
     gauss_solve,
+    ldl_factorization,
 )
 
 
@@ -65,6 +66,11 @@ class TestRoot1Var(unittest.TestCase):
 
         u, l = lu_factorization(A).unwrap()
         self.assertTrue(np.allclose(lu_solve(l, u, b), np.linalg.solve(A, b)))
+
+    def test_ldl_factorization(self):
+        A = np.array([[4, -1, 1], [-1, 4.25, 2.75], [1, 2.75, 3.5]], dtype=float)
+        L, D = ldl_factorization(A).unwrap()
+        self.assertTrue(np.allclose(A, L @ D @ L.T))
 
 
 if __name__ == "__main__":

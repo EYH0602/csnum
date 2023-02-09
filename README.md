@@ -18,8 +18,8 @@ make report[1-5]
 
 ## ToDo
 
-- [ ] full pivot for `GL`
-- [ ] $LDL^t$ Factorization
+- [x] full pivot for `GL`
+- [x] $LDL^t$ Factorization
 - [ ] Cholesky Factorization
 - [ ] Crout Factorization for Tridiagonal Linear Systems
 
