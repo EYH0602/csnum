@@ -34,6 +34,11 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
             if s == 0:
                 return None
             p = np.argmax(xs / s) + i
+        case "complete":
+            A_sub = A[i:, i:]
+            p, q = np.unravel_index(np.argmax(A_sub), A_sub.shape)
+            p += i
+            q += i - 1
         case _:
             return Nothing
 
@@ -46,7 +51,7 @@ def gaussian_elimination(
     """Gaussian Elimination without backward substitution
     Args:
         A (np.matrix): matrix to do gaussian elimination
-        pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial"].
+        pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial", "complete"].
             Defaults to "none".
 
     Returns:
@@ -159,7 +164,7 @@ def gauss_solve(A: np.matrix, b: np.array, pivot: str = "none") -> Maybe[np.arra
     Args:
         A (np.matrix): coefficient matrix
         b (np.array): value vector
-        pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial"].
+        pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial", "complete"].
             Defaults to "none".
 
 
