@@ -46,9 +46,18 @@ class TestRoot1Var(unittest.TestCase):
         )
 
     def test_gauss_solve(self):
-        A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
-        b = np.array([3, 2, 1]).reshape((3, 1))
-        self.assertTrue(np.allclose(gauss_solve(A, b).unwrap(), np.linalg.solve(A, b)))
+        n = 5
+        A = 5 * np.eye(n) + np.random.normal(size=(n, n))
+        b = np.random.normal(size=(n, 1))
+
+        def test(p):
+            return np.allclose(
+                gauss_solve(A, b, pivot=p).unwrap(), np.linalg.solve(A, b)
+            )
+
+        self.assertTrue(test("none"))
+        self.assertTrue(test("partial"))
+        self.assertTrue(test("scaled_partial"))
 
     def test_lu_solve(self):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
