@@ -124,11 +124,11 @@ def forward_substitution(A: np.matrix, b: np.array) -> np.array:
     return x
 
 
-def lu_decomposition(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
-    """LU Decomposition
+def lu_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
+    """LU factorization
 
     Args:
-        A (np.matrix): square matrix to decompose
+        A (np.matrix): square matrix to factorize
 
     Returns:
         Maybe[Tuple[np.matrix, np.matrix]]: (U, L)
@@ -159,7 +159,7 @@ def gauss_solve(A: np.matrix, b: np.array) -> Maybe[np.array]:
 
 def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
     """solve linear system with output from LU factorization
-    this is assumed to be used upon the succuss of `lu_decomposition`
+    this is assumed to be used upon the succuss of `lu_factorization`
 
     Args:
         L (np.matrix): L matrix

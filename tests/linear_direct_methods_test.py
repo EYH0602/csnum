@@ -3,7 +3,7 @@ import numpy as np
 
 from numerical_methods.linear_direct_methods import (
     gaussian_elimination,
-    lu_decomposition,
+    lu_factorization,
     back_substitution,
     lu_solve,
     gauss_solve,
@@ -28,7 +28,7 @@ class TestRoot1Var(unittest.TestCase):
     def test_lu_decomposition(self):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
 
-        l, u = lu_decomposition(A).unwrap()
+        l, u = lu_factorization(A).unwrap()
         a, m = gaussian_elimination(A).unwrap()
 
         self.assertTrue(np.all(np.equal(l, a)))
@@ -54,7 +54,7 @@ class TestRoot1Var(unittest.TestCase):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
         b = np.array([3, 2, 1]).reshape((3, 1))
 
-        u, l = lu_decomposition(A).unwrap()
+        u, l = lu_factorization(A).unwrap()
         self.assertTrue(np.allclose(lu_solve(l, u, b), np.linalg.solve(A, b)))
 
 
