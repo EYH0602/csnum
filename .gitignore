@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 *.pdf
+!doc/report[1-5].pdf
 img
 
 # tex
