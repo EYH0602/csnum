@@ -35,8 +35,8 @@ class TestRoot1Var(unittest.TestCase):
         l, u = lu_factorization(A).unwrap()
         a, m = gaussian_elimination(A).unwrap()
 
-        self.assertTrue(np.all(np.equal(l, a)))
-        self.assertTrue(np.all(np.equal(u, m)))
+        self.assertTrue(np.all(np.equal(u, a)))
+        self.assertTrue(np.all(np.equal(l, m)))
 
     def test_back_substitution(self):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
@@ -67,7 +67,7 @@ class TestRoot1Var(unittest.TestCase):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
         b = np.array([3, 2, 1]).reshape((3, 1))
 
-        u, l = lu_factorization(A).unwrap()
+        l, u = lu_factorization(A).unwrap()
         self.assertTrue(np.allclose(lu_solve(l, u, b), np.linalg.solve(A, b)))
 
     def test_ldl_factorization(self):
