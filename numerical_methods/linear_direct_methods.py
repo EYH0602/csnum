@@ -227,3 +227,11 @@ def ldl_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     D = np.zeros(shape=A.shape)
     np.fill_diagonal(D, d)
     return Some((L, D))
+
+
+def cholesky_factorization(A: np.matrix) -> Maybe[np.matrix]:
+    def decomp_D(ms: Tuple[np.matrix, np.matrix]) -> np.matrix:
+        L, D = ms
+        return L @ np.power(D, 1 / 2)
+
+    return ldl_factorization(A).map(decomp_D)
