@@ -235,3 +235,84 @@ def cholesky_factorization(A: np.matrix) -> Maybe[np.matrix]:
         return L @ np.power(D, 1 / 2)
 
     return ldl_factorization(A).map(decomp_D)
+
+
+def tridiag_ones(n: int) -> np.matrix:
+    """get a tridiagonal matrix with only 1s
+
+    Args:
+        n (int): dimension
+
+    Returns:
+        np.matrix: tridiagonal matrix with only 1s
+    """
+    a = np.ones(n - 1)
+    b = np.ones(n)
+    c = np.ones(n - 1)
+    return np.diag(a, -1) + np.diag(b, 0) + np.diag(c, 1)
+
+
+def is_tridiag(A: np.matrix) -> bool:
+    B = tridiag_ones(A.shape[0])
+    return np.all(np.where(A == 0)[0] == np.where(B == 0)[0])
+
+
+def crout_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
+    """Crout Factorization for Tridiagonal Linear Systems
+
+    Args:
+        A (np.matrix): Tridiagonal square matrix
+
+    Returns:
+        Maybe[Tuple[np.matrix, np.matrix]]: (L, U)
+    """
+    if A.shape[0] != A.shape[1]:
+        return Nothing
+
+    if not is_tridiag(A):
+        return Nothing
+
+    n = A.shape[0]
+    L = np.zeros(shape=A.shape)
+    U = np.identity(n)
+
+    L[0, 0] = A[0, 0]
+    U[0, 1] = A[0, 1] / L[0, 0]
+
+    for i in range(1, n - 1):
+        L[i, i - 1] = A[i, i - 1]
+        L[i, i] = A[i, i] - L[i, i - 1] * U[i - 1, i]
+        U[i, i + 1] = A[i, i + 1] / L[i, i]
+
+    L[-1, -2] = A[-1, -2]
+    L[-1, -1] = A[-1, -1] - L[-1, -2] * U[-2, -1]
+
+    return Some((L, U))
+
+
+def crout_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
+    """solve for Crout Factorization
+
+    Args:
+        L (np.matrix): L output of `crout_factorization`
+        U (np.matrix): U output of `crout_factorization`
+        b (np.array): RHS of linear system
+
+    Returns:
+        np.array: results
+    """
+    z = np.zeros(shape=b.shape)
+    n = b.shape[0]
+    z[0] = b[0] / L[0, 0]
+
+    # solve for Lz = b
+    # don't know why, but the book use z here instead of y
+    for i in range(1, n - 1):
+        z[i] = (b[i] - L[i, i - 1] * z[i - 1]) / L[i, i]
+    z[-1] = (b[-1] - L[-1, -2] * z[-2]) / L[-1, -1]
+    # solve for Ux = z
+    x = z.copy()
+    for i in range(n - 2, -1, -1):
+        x[i] = z[i] - U[i, i + 1] * x[i + 1]
+
+    return x

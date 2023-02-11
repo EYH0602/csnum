@@ -15,11 +15,3 @@ pip3 install -r requirements.txt
 cd doc
 make report[1-5]
 ```
-
-## ToDo
-
-- [x] full pivot for `GL`
-- [x] $LDL^t$ Factorization
-- [ ] Cholesky Factorization
-- [ ] Crout Factorization for Tridiagonal Linear Systems
-

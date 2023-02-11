@@ -9,6 +9,8 @@ from numerical_methods.linear_direct_methods import (
     gauss_solve,
     ldl_factorization,
     cholesky_factorization,
+    crout_factorization,
+    crout_solve,
 )
 
 
@@ -77,6 +79,12 @@ class TestRoot1Var(unittest.TestCase):
         A = np.array([[4, -1, 1], [-1, 4.25, 2.75], [1, 2.75, 3.5]], dtype=float)
         L = cholesky_factorization(A).unwrap()
         self.assertTrue(np.allclose(A, L @ L.T))
+
+    def test_crout(self):
+        A = np.array([[2, -1, 0, 0], [-1, 2, -1, 0], [0, -1, 2, -1], [0, 0, -1, 2]])
+        b = np.array([1, 0, 0, 1]).reshape((4, 1))
+        L, U = crout_factorization(A).unwrap()
+        self.assertTrue(np.allclose(crout_solve(L, U, b), np.linalg.solve(A, b)))
 
 
 if __name__ == "__main__":
