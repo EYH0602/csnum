@@ -8,6 +8,7 @@ from numerical_methods.linear_direct_methods import (
     lu_solve,
     gauss_solve,
     ldl_factorization,
+    cholesky_factorization,
 )
 
 
@@ -71,6 +72,11 @@ class TestRoot1Var(unittest.TestCase):
         A = np.array([[4, -1, 1], [-1, 4.25, 2.75], [1, 2.75, 3.5]], dtype=float)
         L, D = ldl_factorization(A).unwrap()
         self.assertTrue(np.allclose(A, L @ D @ L.T))
+
+    def test_cholesky_factorization(self):
+        A = np.array([[4, -1, 1], [-1, 4.25, 2.75], [1, 2.75, 3.5]], dtype=float)
+        L = cholesky_factorization(A).unwrap()
+        self.assertTrue(np.allclose(A, L @ L.T))
 
 
 if __name__ == "__main__":
