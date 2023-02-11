@@ -114,6 +114,7 @@ From the table, we cen see that then $n$ is small, i.e. $n = 50, 100$,
 LU results have smaller error than GE results.
 When $n$ gets larger to $250, 500$,
 LU lose some accuracy, but GE's error is relatively stable.
+However, there is no clear evidence to determine the difference in errors for two methods.
 From the above  graph, we can see that for different $A$ matrix every time,
 LU and GE has roughly the same execution time.
 When the size of the matrix goes up, LU solves the linear system a litter faster than GE.
@@ -125,14 +126,14 @@ since it only do gaussian elimination the first time and the rest is just forwar
 
 \begin{table}[H]
 \begin{center}	
-	\begin{tabular}{lrrr}
+	\begin{tabular}{rrr}
 	\toprule
-	{} &             GE &            LU \\
+	{ } &           GE &           LU \\
 	\midrule
-	 50 &  3.564803e-11 &  3.145187e-11 \\
-	100 &  4.906939e-11 &  2.390745e-11 \\
-	250 &  1.890665e-09 &  1.223007e-09 \\
-	500 &  1.799276e-09 &  1.455843e-09 \\
+	 50 & 2.427530e-12 & 3.156321e-12 \\
+	100 & 4.067419e-11 & 4.183250e-11 \\
+	250 & 2.874165e-10 & 3.586288e-10 \\
+	500 & 3.865731e-08 & 1.125961e-08 \\
 	\bottomrule
 	\end{tabular}
 	\caption{Errors of $\| \hat{A}x - b\|_{2}$ for GE and LU methods}
@@ -155,7 +156,7 @@ since it only do gaussian elimination the first time and the rest is just forwar
 	\caption{Execution time of GE and LU with different (left) and same (right) $\hat{A}$.}
 \end{figure}
 
-In this case, we can see that errors of LU is smaller than GE.
+In this case, we still cannot detect any clear trend in errors.
 In terms of execution time,
 solving $\hat{A}$ shows similar trends as solving $A$.
 
