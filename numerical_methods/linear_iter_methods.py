@@ -66,3 +66,22 @@ def gauss_seidel(
         return x
 
     return general_iter_method(succ, x0, max_iter, thresh, return_iter)
+
+
+def sor(
+    A: np.matrix,
+    b: np.ndarray,
+    x0: np.ndarray,
+    w: float = 1.1,
+    max_iter: int = 10,
+    thresh: float = 1e-8,
+    return_iter: bool = False,
+):
+    def succ(x0):
+        x = np.zeros(shape=x0.shape)
+        for i in range(x0.shape[0]):
+            gs_update = -A[i, :i] @ x[:i] - A[i, i + 1 :] @ x0[i + 1 :] + b[i]
+            x[i] = (1 - w) * x0[i, :] + w * gs_update / A[i, i]
+        return x
+
+    return general_iter_method(succ, x0, max_iter, thresh, return_iter)
