@@ -1,6 +1,9 @@
 import numpy as np
 from numpy.linalg import norm
 from typing import Tuple, List, Callable, Union
+from returns.maybe import Maybe, Some, Nothing
+
+from numerical_methods.linear_direct_methods import lu_factorization, lu_solve
 
 
 def _converged(curr: np.ndarray, prev: np.ndarray, thresh: float) -> bool:
@@ -85,3 +88,24 @@ def sor(
         return x
 
     return general_iter_method(succ, x0, max_iter, thresh, return_iter)
+
+
+def lu_refinement(
+    A: np.matrix,
+    b: np.ndarray,
+    max_iter: int = 10,
+    thresh: float = 1e-8,
+    return_iter: bool = False,
+) -> Maybe[Union[Tuple[np.ndarray, int], np.ndarray]]:
+    match lu_factorization(A):
+        case Some((L, U)):
+            xk = lu_solve(L, U, b)
+
+            def succ(xk):
+                r = b - A @ xk
+                y = lu_solve(L, U, r)
+                return xk + y
+
+            return Some(general_iter_method(succ, xk, max_iter, thresh, return_iter))
+        case Nothing:
+            return Nothing
