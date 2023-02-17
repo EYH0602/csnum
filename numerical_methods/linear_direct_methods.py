@@ -154,7 +154,7 @@ def lu_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     # only decompose square matrix
     if A.shape[0] != A.shape[1]:
         return Nothing
-    return gaussian_elimination(A, pivot="none").map(reversed)
+    return gaussian_elimination(A, pivot="none").map(lambda p: (p[1], p[0]))
 
 
 def gauss_solve(A: np.matrix, b: np.array, pivot: str = "none") -> Maybe[np.array]:
