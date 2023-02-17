@@ -1,7 +1,12 @@
 import unittest
 import numpy as np
 
-from numerical_methods.linear_iter_methods import jacobi, gauss_seidel, sor
+from numerical_methods.linear_iter_methods import (
+    jacobi,
+    gauss_seidel,
+    sor,
+    lu_refinement,
+)
 
 
 def generate_random(n):
@@ -43,11 +48,18 @@ class TestRoot1Var(unittest.TestCase):
         A = np.array([[4, 3, 0], [3, 4, -1], [0, -1, 4]])
         b = np.array([[24, 30, -24]]).T
         x0 = np.zeros(shape=b.shape)
-        
+
         _, sor_it = sor(A, b, x0, w=1.25, max_iter=100, return_iter=True)
         _, gs_it = gauss_seidel(A, b, x0, max_iter=100, return_iter=True)
-        
+
         self.assertTrue(gs_it / sor_it >= 2)
+
+    def test_lu_refinement(self):
+        for _ in range(10):
+            A, b = generate_random(50)
+
+            x_refine = lu_refinement(A, b, max_iter=20).unwrap()
+            self.assertTrue(np.allclose(np.linalg.solve(A, b), x_refine))
 
 
 if __name__ == "__main__":
