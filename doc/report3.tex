@@ -85,10 +85,13 @@ For number of iteration,
 we can see that Gauss-Seidel is still the lowest.
 When $n$ is small (i.e. $\leq 100$). SOR methods uses less iteration than Jacobi,
 but Jacobi uses lower number of iteration when the size goes up.
-Two SOR methods still behaves similarly and not ideally,
-this might be caused by bad choices by $\omega$.
 One thing to note is that with larger $n$,
 it requires less number of iteration to converge for all methods.
+Two SOR methods still behaves similarly and not ideally,
+this might be caused by bad choices by $\omega$.
+Another reason might be that these random $A$ are low-rank diagonal matrices,
+for which Jacobi and Gauss-Seidel methods have a smaller spectral radius than SOR,
+which leads to faster convergence of Jacobi and Gauss-Seidel.
 
 \begin{figure}[H]
     \centering
