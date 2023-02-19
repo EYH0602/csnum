@@ -35,6 +35,20 @@ class TestRoot1Var(unittest.TestCase):
             x = sor(A, b, x0, max_iter=20)
             self.assertTrue(np.allclose(np.linalg.solve(A, b), x))
 
+    def test_sor_conv(self):
+        # see textbook example 1 on P.464
+        # for the appropriate value of w
+        # sor should be faster than gauss_seidel by a order of 2
+
+        A = np.array([[4, 3, 0], [3, 4, -1], [0, -1, 4]])
+        b = np.array([[24, 30, -24]]).T
+        x0 = np.zeros(shape=b.shape)
+        
+        _, sor_it = sor(A, b, x0, w=1.25, max_iter=100, return_iter=True)
+        _, gs_it = gauss_seidel(A, b, x0, max_iter=100, return_iter=True)
+        
+        self.assertTrue(gs_it / sor_it >= 2)
+
 
 if __name__ == "__main__":
     unittest.main()
