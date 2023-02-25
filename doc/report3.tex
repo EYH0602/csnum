@@ -16,9 +16,8 @@ Then we compare four methods: Jacobi, Gauss-Seidel, SOR with $\omega = 1.1$ (sor
 The test will be performed random matrices of size $n = 10, 25, 50, 100, 200, 500$.
 The linear system $Ax = b$ to solve will have the following setup
 $$
-A = \frac{n}{2} \times I + R
+A = \frac{n}{2} \times I + randn(n, n).
 $$
-where random entries $r_{ij}, b_{ij} \sim N(0, 1)$.
 We plot their execution time and number of iteration used v.s. $n$.
 Finally, we will record errors at every step for $n = 500$ 
 and plot it with respect to number of iteration.
@@ -78,9 +77,9 @@ We compare the time and iteration used for each methods until the relative updat
 
 For execution time,
 we can see that Gauss-Seidel is the fastest for each $n$,
-followed by Jacobi and two SOR methods.
+followed by two SOR methods and Jacobi.
 Gauss-Seidel is generally a order faster than Jacobi,
-and SOR behaves similar for $\omega = 1.1, 0.9$.
+and SOR have similar trend, but $\omega = 0.9$ is a little faster than $\omega = 1.1$.
 
 \begin{figure}[H]
     \centering
@@ -91,15 +90,13 @@ and SOR behaves similar for $\omega = 1.1, 0.9$.
 
 For number of iteration,
 we can see that Gauss-Seidel is still the lowest.
-When $n$ is small (i.e. $\leq 100$). SOR methods uses less iteration than Jacobi,
-but Jacobi uses lower number of iteration when the size goes up.
-One thing to note is that with larger $n$,
-it requires less number of iteration to converge for all methods.
-Two SOR methods still behaves similarly and not ideally,
+Two SOR methods still behaves similarly and not ideally (using less iteration then Gauss-Seidel),
 this might be caused by bad choices by $\omega$.
+$\omega=0.9$ uses fewer iterations than $\omega=1.1$.
 Another reason might be that these random $A$ are low-rank diagonal matrices,
-for which Jacobi and Gauss-Seidel methods have a smaller spectral radius than SOR,
-which leads to faster convergence of Jacobi and Gauss-Seidel.
+for which Gauss-Seidel methods have a smaller spectral radius than SOR,
+which leads to faster convergence of Gauss-Seidel.
+Jacobi is still the slowest in terms of using the most iteration.
 
 \begin{figure}[H]
     \centering
@@ -115,9 +112,6 @@ And the differences in errors becomes hard to distinguish after about 4 iteratio
 For $\hat{A} = randn(n, n)$ matrices,
 sometimes Jacobi and Gauss-Seidel failed to converge since $\hat{A}$ may not be diagonally dominant.
 
-
-\section{Collaboration}
-No collaboration on this project.
 
 
 \section{Academic Integrity}
