@@ -36,7 +36,7 @@ def power_method(
     x = x / x[p]
     for _ in range(max_iter):
         y = update(A, x)
-        mu = y[p]
+        mu = y[p, 0]
         p = _select_idx(y)
         if y[p] == 0:
             return Failure(
