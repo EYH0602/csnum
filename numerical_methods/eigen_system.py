@@ -3,8 +3,13 @@ from typing import List, Tuple, Callable
 from returns.result import Result, Success, Failure
 
 
-def _select_idx(vec: np.ndarray) -> int:
-    return np.argmin(np.where(vec == np.linalg.norm(vec, ord=np.inf)))
+def _select_idx(x: np.ndarray) -> int:
+    """
+    Find the smallest integer p with 1 <= p  <= n and |x_p| = ||x||_inf
+    """
+    norm = np.linalg.norm(x, ord=np.inf)  # ||x||_inf
+    x = np.abs(x)  # |x_p|
+    return np.min(np.where(np.isclose(x, norm))[0])
 
 
 def power_method(
