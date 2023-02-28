@@ -72,8 +72,3 @@ def inverse_power_method(
     return map_(inverse_method_res)(
         power_method(A, x, update=update, max_iter=max_iter, thresh=thresh),
     )
-
-
-# .map(
-#         inverse_method_res
-#     )
