@@ -1,6 +1,7 @@
 import numpy as np
 from typing import List, Tuple, Callable
 from returns.result import Result, Success, Failure
+from returns.pointfree import map_
 
 
 def _select_idx(x: np.ndarray) -> int:
@@ -50,3 +51,29 @@ def power_method(
 
     # not converged
     return Failure(("The maximum number of iterations exceeded", x))
+
+
+def inverse_power_method(
+    A: np.matrix,
+    x: np.ndarray,
+    max_iter: int = 10,
+    thresh: float = 1e-4,
+) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
+    q = x.T @ A @ x / (x.T @ x)
+
+    def update(A, x):
+        # ToDo: use LU solve
+        return np.linalg.solve(A - q * np.eye(A.shape[0]), x)
+
+    def inverse_method_res(p):
+        mu, x = p
+        return (1 / mu + q, x)
+
+    return map_(inverse_method_res)(
+        power_method(A, x, update=update, max_iter=max_iter, thresh=thresh),
+    )
+
+
+# .map(
+#         inverse_method_res
+#     )
