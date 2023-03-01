@@ -1,7 +1,10 @@
 import numpy as np
 from typing import List, Tuple, Callable
 from returns.result import Result, Success, Failure
+from returns.maybe import Maybe, Nothing, Some
 from returns.pointfree import map_
+
+from numerical_methods.linear_direct_methods import lu_factorization, lu_solve
 
 
 def _select_idx(x: np.ndarray) -> int:
@@ -61,14 +64,16 @@ def inverse_power_method(
 ) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
     q = x.T @ A @ x / (x.T @ x)
 
-    def update(A, x):
-        # ToDo: use LU solve
-        return np.linalg.solve(A - q * np.eye(A.shape[0]), x)
+    match lu_factorization(A - q * np.eye(A.shape[0])):
+        case Some((L, U)):
+            inv_power_update = lambda _, x: lu_solve(L, U, x)
+        case Nothing:
+            return Failure(("LU Factorization failed", x))
 
-    def inverse_method_res(p):
+    def inv_power_eig(p):
         mu, x = p
         return (1 / mu + q, x)
 
-    return map_(inverse_method_res)(
-        power_method(A, x, update=update, max_iter=max_iter, thresh=thresh),
+    return map_(inv_power_eig)(
+        power_method(A, x, update=inv_power_update, max_iter=max_iter, thresh=thresh),
     )
