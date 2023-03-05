@@ -42,7 +42,7 @@ def power_method(
         y = update(A, x)
         mu = y[p, 0]
         p = _select_idx(y)
-        if y[p] == 0:
+        if y[p, 0] == 0:
             return Failure(
                 ("A has the eigenvalue 0, select a new vector x and restart", x)
             )
