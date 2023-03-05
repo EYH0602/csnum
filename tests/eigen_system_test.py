@@ -35,8 +35,8 @@ class TestRoot1Var(unittest.TestCase):
             match power_method(A, x0, max_iter=100000000, thresh=1e-8):
                 case Success((mu, _)):
                     xs, _ = np.linalg.eig(A)
-                    x = np.max(np.abs(xs))
-                    self.assertTrue(np.isclose(np.abs(mu), x))
+                    x = xs[np.argmax(np.abs(xs))]
+                    self.assertTrue(np.isclose(mu, x))
                 case Failure(_):
                     self.fail()
 
@@ -57,8 +57,8 @@ class TestRoot1Var(unittest.TestCase):
             match inverse_power_method(A, x0, max_iter=10000, thresh=1e-8):
                 case Success((mu, _)):
                     xs, _ = np.linalg.eig(A)
-                    x = np.min(np.abs(xs))
-                    self.assertTrue(np.isclose(np.abs(mu), x))
+                    x = xs[np.argmin(np.abs(xs))]
+                    self.assertTrue(np.isclose(mu, x))
                 case Failure(_):
                     self.fail()
 
