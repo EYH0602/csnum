@@ -20,7 +20,7 @@ def power_method(
     A: np.matrix,
     x: np.ndarray,
     update: Callable[[np.matrix, np.ndarray], np.ndarray] = np.matmul,
-    max_iter: int = 10,
+    max_iter: int = 100000000,
     thresh: float = 1e-4,
 ) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
     """Power Method to approximate the dominate eigenvalue and eigenvector
@@ -59,7 +59,7 @@ def power_method(
 def inverse_power_method(
     A: np.matrix,
     x: np.ndarray,
-    max_iter: int = 10,
+    max_iter: int = 10000,
     thresh: float = 1e-4,
     q: float = 0,
 ) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
