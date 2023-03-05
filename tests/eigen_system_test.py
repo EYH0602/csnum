@@ -43,7 +43,8 @@ class TestRoot1Var(unittest.TestCase):
     def test_inverse_power_method(self):
         A = np.array([[-4, 14, 0], [-5, 13, 0], [-1, 0, 2]])
         x0 = np.array([[1, 1, 1]]).T
-        mu, x = inverse_power_method(A, x0).unwrap()
+        q = x0.T @ A @ x0 / (x0.T @ x0)
+        mu, x = inverse_power_method(A, x0, max_iter=1000, thresh=1e-8, q=q).unwrap()
         true_x = np.array([[1, 0.7142858, -0.2499996]]).T
         self.assertTrue(np.isclose(6.0000017, mu, atol=1e-2))
         self.assertTrue(np.allclose(x, true_x, atol=1e-2))
@@ -53,10 +54,11 @@ class TestRoot1Var(unittest.TestCase):
             n = 50
             A = rand_mat(n=n)
             x0 = np.ones(shape=(n, 1))
-            match inverse_power_method(A, x0, max_iter=100000000, thresh=1e-8):
+            match inverse_power_method(A, x0, max_iter=10000, thresh=1e-8):
                 case Success((mu, _)):
                     xs, _ = np.linalg.eig(A)
-                    self.assertTrue(np.any(np.isclose(mu, xs)))
+                    x = np.min(np.abs(xs))
+                    self.assertTrue(np.isclose(np.abs(mu), x))
                 case Failure(_):
                     self.fail()
 
