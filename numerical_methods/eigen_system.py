@@ -12,8 +12,8 @@ def _select_idx(x: np.ndarray) -> int:
     Find the smallest integer p with 1 <= p  <= n and |x_p| = ||x||_inf
     """
     norm = np.linalg.norm(x, ord=np.inf)  # ||x||_inf
-    x = np.abs(x)  # |x_p|
-    return np.min(np.where(np.isclose(x, norm))[0])
+    x_abs = np.abs(x)  # |x_p|
+    return np.min(np.where(np.isclose(x_abs, norm))[0])
 
 
 def power_method(
@@ -37,7 +37,7 @@ def power_method(
     """
 
     p = _select_idx(x)
-    x = x / x[p]
+    x = x / x[p, 0]
     for _ in range(max_iter):
         y = update(A, x)
         mu = y[p, 0]
@@ -47,8 +47,8 @@ def power_method(
                 ("A has the eigenvalue 0, select a new vector x and restart", x)
             )
 
-        err = np.linalg.norm(x - (y / y[p]), ord=np.inf)
-        x = y / y[p]
+        err = np.linalg.norm(x - (y / y[p, 0]), ord=np.inf)
+        x = y / y[p, 0]
         if err < thresh:
             return Success((mu, x))
 
