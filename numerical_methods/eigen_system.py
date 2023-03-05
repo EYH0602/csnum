@@ -61,8 +61,8 @@ def inverse_power_method(
     x: np.ndarray,
     max_iter: int = 10,
     thresh: float = 1e-4,
+    q: float = 0,
 ) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
-    q = x.T @ A @ x / (x.T @ x)
 
     match lu_factorization(A - q * np.eye(A.shape[0])):
         case Some((L, U)):
