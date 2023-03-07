@@ -12,7 +12,22 @@
 
 \section{Problem Description}
 
+In this report, we will test the execution time, error of eigen values, and error of eigen vectors
+solved by power method and inverse power method.
+The random matrices for testing will be symmetric diagonally dominated, defined as
+$$
+A = \frac{1}{2}I + B + B^{T}
+$$
+where $B$ is a random $50 \times 50$ matrix with entries drawn from the normal distribution.
 
+Let $\lambda^*$ denote the largest/smallest eigen value solved by numpy as the ``ground truth'',
+we measure the error of our eigen value as $\abs{\lambda - \lambda^*}$
+and the error of our eigen vector as
+$$
+\frac{\norm{Ax - \lambda x}_{\infty}}{\lambda^*}.
+$$
+We will repeat each experiment 25 times and tke the average of the errors.
+For each method, we will set threshold as $10 \times 10^{-4}$.
 
 \section{Results}
 
@@ -30,6 +45,10 @@
 	\caption{Comparison table for results of power method and inverse power method}
 \end{center}
 \end{table}
+
+From the table, we can see that both method (smallest by inverse power method and largest by power method)
+uses similar amount of time.
+The error of both eigen value and eigen vector produced by inverse power method is smaller than power method.
 
 \subsection{Comparison}
 
