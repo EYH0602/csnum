@@ -1,18 +1,19 @@
-\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{multirow} % Multirow is for tables with multiple rows within one cell.
 \usepackage{booktabs} % For even nicer tables.
-\usepackage{graphicx} 
+\usepackage{graphicx}
 \usepackage{setspace}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{listings}
+\usepackage{mathtools}
 
 % The fancyhdr package let's us create nice headers.
 \usepackage{fancyhdr}
-\pagestyle{fancy} 
+\pagestyle{fancy}
 \fancyhf{} % This makes sure we do not have other information in our header or footer.
 
 \lhead{\footnotesize 128B Report}
@@ -22,7 +23,7 @@
 
 % Similar commands work for the footer (\lfoot, \cfoot and \rfoot).
 % We want to put our page number in the center.
-\cfoot{\footnotesize \thepage} 
+\cfoot{\footnotesize \thepage}
 
 \usepackage[table]{xcolor}
 % allow code segment, from Overleaf
@@ -35,18 +36,18 @@
 
 %Code listing style named "mystyle"
 \lstdefinestyle{mystyle}{
-  backgroundcolor=\color{backcolour},  
+  backgroundcolor=\color{backcolour},
   commentstyle=\color{codegreen},
   keywordstyle=\color{magenta},
   stringstyle=\color{codepurple},
   basicstyle=\ttfamily\footnotesize,
-  breakatwhitespace=false,         
-  breaklines=true,                 
-  captionpos=b,                    
-  keepspaces=true,                 
-  showspaces=false,                
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  showspaces=false,
   showstringspaces=false,
-  showtabs=false,                  
+  showtabs=false,
   tabsize=4
 }
 
@@ -57,6 +58,9 @@
 \newcommand\Tstrut{\rule{0pt}{2.6ex}}         % = `top' strut
 \newcommand\tstrut{\rule{0pt}{2.0ex}}         % = `top' strut
 \newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}}   % = `bottom' strut
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 
 \usepackage{caption}
 \usepackage{subcaption}
