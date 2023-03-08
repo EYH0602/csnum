@@ -113,7 +113,7 @@ def wielandt_deflation(
             u = np.zeros(shape=v.shape)
             if i != 0:
                 w[: i - 1] = wp[: i - 1]
-            if i != n:
+            if i != n - 1:
                 w[i + 1 :] = wp[i:]
             for k in range(n):
                 u[k] = (mu - l) * w[k] + (A[i, :] @ w) * v[k] / v[i]

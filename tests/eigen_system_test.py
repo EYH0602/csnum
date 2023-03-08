@@ -67,7 +67,6 @@ class TestRoot1Var(unittest.TestCase):
                     self.fail()
 
     def test_wielandt_deflation(self):
-        pass
         A = np.array([[4, -1, 1], [-1, 3, -2], [1, -2, 3]])
         x0 = np.array([[1, 0]]).T
 
