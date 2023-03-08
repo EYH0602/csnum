@@ -2,7 +2,11 @@ import unittest
 import numpy as np
 from returns.result import Result, Success, Failure
 
-from numerical_methods.eigen_system import power_method, inverse_power_method
+from numerical_methods.eigen_system import (
+    power_method,
+    inverse_power_method,
+    wielandt_deflation,
+)
 
 
 def rand_mat(n=50):
@@ -49,7 +53,7 @@ class TestRoot1Var(unittest.TestCase):
         self.assertTrue(np.isclose(6.0000017, mu, atol=1e-2))
         self.assertTrue(np.allclose(x, true_x, atol=1e-2))
 
-    def test_power_method_random(self):
+    def test_inverse_power_method_random(self):
         for _ in range(100):
             n = 50
             A = rand_mat(n=n)
@@ -61,6 +65,22 @@ class TestRoot1Var(unittest.TestCase):
                     self.assertTrue(np.isclose(mu, x))
                 case Failure(_):
                     self.fail()
+
+    def test_wielandt_deflation(self):
+        pass
+        A = np.array([[4, -1, 1], [-1, 3, -2], [1, -2, 3]])
+        x0 = np.array([[1, 0]]).T
+
+        l = 6
+        v = np.array([[1, -1, 1]]).T
+
+        l_true = 3
+        v_true = np.array([[-2, -1, 1]]).T
+        l2, v2 = wielandt_deflation(
+            A, x0, l, v, solver=power_method, thresh=1e-6
+        ).unwrap()
+        self.assertTrue(np.isclose(l2, l_true, rtol=1e-4))
+        self.assertTrue(np.allclose(v2, v_true, rtol=1e-4))
 
 
 if __name__ == "__main__":

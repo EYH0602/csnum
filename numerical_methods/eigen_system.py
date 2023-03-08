@@ -87,7 +87,7 @@ def wielandt_deflation(
     solver=power_method,
     max_iter: int = 10000,
     thresh: float = 1e-4,
-):
+) -> Result[Tuple[float, np.ndarray], str]:
     i = _select_idx(v)
     n = A.shape[0]
     B = np.zeros(shape=(n - 1, n - 1))
@@ -114,9 +114,9 @@ def wielandt_deflation(
             if i != 0:
                 w[: i - 1] = wp[: i - 1]
             if i != n:
-                w[i + 1 :] = wp[i + 1 :]
-            for i in range(n):
+                w[i + 1 :] = wp[i:]
+            for k in range(n):
                 u[k] = (mu - l) * w[k] + (A[i, :] @ w) * v[k] / v[i]
             return Success((mu, u))
         case Failure((msg, _)):
-            return Failure(solver.__name__ + ": " + msg)
+            return Failure(f"{solver.__name__} fails: {msg}")
