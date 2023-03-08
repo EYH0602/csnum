@@ -77,3 +77,46 @@ def inverse_power_method(
     return map_(inv_power_eig)(
         power_method(A, x, update=inv_power_update, max_iter=max_iter, thresh=thresh),
     )
+
+
+def wielandt_deflation(
+    A: np.matrix,
+    x: np.ndarray,
+    l: float,
+    v: np.ndarray,
+    solver=power_method,
+    max_iter: int = 10000,
+    thresh: float = 1e-4,
+):
+    i = _select_idx(v)
+    n = A.shape[0]
+    B = np.zeros(shape=(n - 1, n - 1))
+    if i != 0:
+        for k in range(i - 1):
+            for j in range(i - 1):
+                B[k, j] = A[k, j] - A[i, j] * v[k] / v[i]
+
+    if i != 0 and i != n - 1:
+        for k in range(i, n - 1):
+            for j in range(i - 1):
+                B[k, j] = A[k + 1, j] - A[i, j] * v[k + 1] / v[i]
+                B[j, k] = A[j, k + 1] - A[i, k + 1] * v[j] / v[i]
+
+    if i != n - 1:
+        for k in range(i, n - 1):
+            for j in range(i, n - 1):
+                B[k, j] = A[k + 1, j + 1] - A[i, j + 1] * v[k + 1] / v[i]
+
+    match solver(B, x, max_iter=max_iter, thresh=thresh):
+        case Success((mu, wp)):
+            w = np.zeros(shape=v.shape)
+            u = np.zeros(shape=v.shape)
+            if i != 0:
+                w[: i - 1] = wp[: i - 1]
+            if i != n:
+                w[i + 1 :] = wp[i + 1 :]
+            for i in range(n):
+                u[k] = (mu - l) * w[k] + (A[i, :] @ w) * v[k] / v[i]
+            return Success((mu, u))
+        case Failure((msg, _)):
+            return Failure(solver.__name__ + ": " + msg)
