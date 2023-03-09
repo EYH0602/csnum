@@ -33,24 +33,29 @@ For each method, we will set threshold as $10 \times 10^{-4}$.
 
 \begin{table}[h]
 \begin{center}
-
 	\begin{tabular}{lrrr}
-		\toprule
-		{} &  $\lambda$ time &  $\lambda$ error &  Vector Error \\
-		\midrule
-		Smallest Eig &     0.009330 &      0.000003 &      0.000067 \\
-		Largest Eig  &     0.009005 &      0.000636 &      0.036263 \\
-		\bottomrule
-		\end{tabular}
-	\caption{Comparison table for results of power method and inverse power method}
+	\toprule
+	{} &  lambda time &  lambda error &  Vector Error \\
+	\midrule
+	Smallest Eig        &     0.005557 &      0.000006 &      0.000066 \\
+	Largest Eig         &     0.008837 &      0.000426 &      0.000096 \\
+	Second Smallest Eig &     0.011730 &      0.000053 &      0.000057 \\
+	Second Largest Eig  &     0.012146 &      0.009372 &      0.011311 \\
+	\bottomrule
+	\end{tabular}
+	\caption{Comparison of results of power method, inverse power method, and their deflation}
 \end{center}
 \end{table}
 
 From the table, we can see that both method (smallest by inverse power method and largest by power method)
 uses similar amount of time.
-The error of both eigen value and eigen vector produced by inverse power method is smaller than power method.
+The errors of both eigen value and eigen vector produced by inverse power method is smaller than power method.
+The deflation methods to get the second largest/smallest also has similar execution time,
+and both is longer than solving for largest/smallest directly.
+The errors also show a similar trend that second largest's error is greater than the second smallest's for
+eigen value and eigen vector.
+This trend is understandable because the deflation method calls the power method or inverse power method inside.
 
-\subsection{Comparison}
 
 
 \section{Academic Integrity}
