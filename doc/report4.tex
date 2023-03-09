@@ -24,7 +24,7 @@ Let $\lambda^*$ denote the largest/smallest eigen value solved by numpy as the `
 we measure the error of our eigen value as $\abs{\lambda - \lambda^*}$
 and the error of our eigen vector as
 $$
-\frac{\norm{Ax - \lambda x}_{\infty}}{\lambda^*}.
+\frac{\norm{Ax - \lambda x}_{\infty}}{\abs{\lambda^*}}.
 $$
 We will repeat each experiment 25 times and tke the average of the errors.
 For each method, we will set threshold as $10 \times 10^{-4}$.
