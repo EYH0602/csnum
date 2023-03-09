@@ -88,7 +88,8 @@ def wielandt_deflation(
     max_iter: int = 10000,
     thresh: float = 1e-4,
 ) -> Result[Tuple[float, np.ndarray], str]:
-    i = _select_idx(v)
+    v_abs = np.abs(v)
+    i = np.min(np.where(v_abs == v_abs.max()))
     n = A.shape[0]
     B = np.zeros(shape=(n - 1, n - 1))
     if i != 0:
@@ -112,7 +113,7 @@ def wielandt_deflation(
             w = np.zeros(shape=v.shape)
             u = np.zeros(shape=v.shape)
             if i != 0:
-                w[: i - 1] = wp[: i - 1]
+                w[:i] = wp[:i]
             if i != n - 1:
                 w[i + 1 :] = wp[i:]
             for k in range(n):
