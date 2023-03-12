@@ -5,7 +5,6 @@ from logging import warning
 
 
 Cts = Callable[[float], float]  # not true, but works for know
-T = TypeVar("T")
 Calcable = TypeVar("Calcable")
 
 
