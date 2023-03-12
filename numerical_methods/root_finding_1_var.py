@@ -1,10 +1,12 @@
 import jax.numpy as jnp
 from jax import grad
-from typing import Tuple, Callable, Dict, List
+from typing import Tuple, Callable, Dict, List, TypeVar
 from logging import warning
 
 
-Cts = Callable[float, float]  # not true, but works for know
+Cts = Callable[[float], float]  # not true, but works for know
+T = TypeVar("T")
+Calcable = TypeVar("Calcable")
 
 
 def Bisection(f: Cts, x: Tuple[float, float], eps=1e-4, max_iter=15):
@@ -36,12 +38,18 @@ def Bisection(f: Cts, x: Tuple[float, float], eps=1e-4, max_iter=15):
     return p
 
 
+def _converged(x: float, y: float, tol: float) -> bool:
+    return jnp.abs(x - y) < tol
+
+
 def General_Iter_Method(
-    succ: Callable[List[float], float],
-    p0: float,
+    succ: Callable[[List[Calcable]], Calcable],
+    p0: Calcable,
     tol: float,
     max_iter: int,
+    converged: Callable[[Calcable, Calcable, float], bool],
     method: str = "",
+    return_all=True,
 ):
     """General Iterative Method (gim)
 
@@ -58,16 +66,16 @@ def General_Iter_Method(
     Returns:
         List[float]: the sequence of approximations used by the method
     """
-    p: List[float] = []
+    p: List[Calcable] = []
     p.append(p0)
     for i in range(1, max_iter):
         p.append(succ(p))
-        if jnp.abs(p[i] - p[i - 1]) < tol:
+        if converged(p[i], p[i - 1], tol):
             p += [p[i]] * (max_iter - i - 1)
-            return p
+            return p if return_all else p[-1]
 
     warning(f"{method} fail to converge in {max_iter} iterations")
-    return p
+    return p if return_all else p[-1]
 
 
 def Fixed_Point(f: Cts, p0: float, tol=1e-4, max_iter=15, g: Cts = None):
@@ -77,7 +85,7 @@ def Fixed_Point(f: Cts, p0: float, tol=1e-4, max_iter=15, g: Cts = None):
         g = lambda x: x - f(x)
 
     return General_Iter_Method(
-        lambda ps: g(ps[-1]), p0, tol, max_iter, method="Fixed Point Method"
+        lambda ps: g(ps[-1]), p0, tol, max_iter, _converged, method="Fixed Point Method"
     )
 
 
@@ -88,7 +96,9 @@ def Newton(f: Cts, p0: float, tol=1e-4, max_iter=15):
         p = ps[-1]
         return p - f(p) / grad(f)(p)
 
-    return General_Iter_Method(succ, p0, tol, max_iter, method="Newton's Method")
+    return General_Iter_Method(
+        succ, p0, tol, max_iter, _converged, method="Newton's Method"
+    )
 
 
 def Secant(f: Cts, p: Tuple[float, float], eps=1e-4, max_iter=15):
@@ -105,7 +115,9 @@ def Secant(f: Cts, p: Tuple[float, float], eps=1e-4, max_iter=15):
         p2 = p1 - q1 * (p1 - p0) / (q1 - q0)
         return p2
 
-    return General_Iter_Method(succ, p0_org, eps, max_iter, method="Secant Method")
+    return General_Iter_Method(
+        succ, p0_org, eps, max_iter, _converged, method="Secant Method"
+    )
 
 
 def Steffensen(f: Cts, p: float, tol=1e-4, max_iter=15, g: Cts = None):
@@ -116,6 +128,8 @@ def Steffensen(f: Cts, p: float, tol=1e-4, max_iter=15, g: Cts = None):
         p0 = ps[-1]
         p1 = g(p0)
         p2 = g(p1)
-        return p0 - (p1 - p0)**2 / (p2 - 2*p1 + p0)
-    
-    return General_Iter_Method(succ, p, tol, max_iter, method="Steffensen's Method")
+        return p0 - (p1 - p0) ** 2 / (p2 - 2 * p1 + p0)
+
+    return General_Iter_Method(
+        succ, p, tol, max_iter, _converged, method="Steffensen's Method"
+    )
