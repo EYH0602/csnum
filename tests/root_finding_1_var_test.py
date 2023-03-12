@@ -1,11 +1,11 @@
 import unittest
 import jax.numpy as jnp
 from numerical_methods.root_finding_1_var import (
-    Steffensen,
-    Fixed_Point,
-    Newton,
-    Bisection,
-    Secant,
+    steffensen,
+    fixed_point,
+    newton,
+    bisection,
+    secant,
 )
 
 
@@ -20,23 +20,21 @@ def test_res(xs):
 
 
 class TestRoot1Var(unittest.TestCase):
-    def test_Fixed_Point(self):
+    def test_fixed_point(self):
         def g(x):
-            return x - (x**3 + 4 * x**2 - 10) / (
-                3 * x**2 + 8 * x
-            )
+            return x - (x**3 + 4 * x**2 - 10) / (3 * x**2 + 8 * x)
 
-        xs = Fixed_Point(f, 1.5, g=g)
+        xs = fixed_point(f, 1.5, g=g)
         self.assertTrue(test_res(xs))
 
-    def test_Newton(self):
-        self.assertTrue(test_res(Newton(f, 1.5)))
+    def test_newton(self):
+        self.assertTrue(test_res(newton(f, 1.5)))
 
-    def test_Secant(self):
-        self.assertTrue(test_res(Secant(f, (1.5, 1))))
+    def test_secant(self):
+        self.assertTrue(test_res(secant(f, (1.5, 1))))
 
-    def test_Steffensen(self):
-        self.assertTrue(test_res(Steffensen(f, 1.5)))
+    def test_steffensen(self):
+        self.assertTrue(test_res(steffensen(f, 1.5)))
 
 
 if __name__ == "__main__":
