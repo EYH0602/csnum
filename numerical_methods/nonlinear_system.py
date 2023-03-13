@@ -52,9 +52,11 @@ def jacobian_apply(J: List[NCts], xs: Iterable[float]) -> np.matrix:
 
 
 def newton(fs: NCts, p0: Iterable[float], tol=1e-4, max_iter=15):
+    Jf = jacobian(fs)
+
     def succ(ps):
         xs = ps[-1]
-        J = jacobian_apply(jacobian(fs), xs)
+        J = jacobian_apply(Jf, xs)
         F = _ndapply(fs, xs)
         ys = jnp.linalg.solve(J, F)
         return xs - ys
