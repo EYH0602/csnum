@@ -19,7 +19,12 @@ def _ndapply(fs: NCts, xs: List[float]) -> List[float]:
     return [f(xs) for f in fs]
 
 
-def fixed_point(gs: NCts, p0: List[float], tol=1e-4, max_iter=15):
+def fixed_point(
+    fs: NCts, p0: List[float], tol=1e-4, max_iter=15, gs: Optional[NCts] = None
+):
+    if gs is None:
+        gs = [lambda x: x - f(x) for f in fs]
+
     return general_iter_method(
         lambda ps: _ndapply(gs, ps[-1]),
         p0,
@@ -29,3 +34,6 @@ def fixed_point(gs: NCts, p0: List[float], tol=1e-4, max_iter=15):
         method="Fixed Point Method",
         return_all=True,
     )
+
+
+# def newton()
