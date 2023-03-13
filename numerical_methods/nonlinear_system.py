@@ -19,7 +19,7 @@ def _converged(xs, ys, tol):
 
 
 def _ndapply(fs: NCts, xs: List[float]) -> List[float]:
-    return [f(*xs) for f in fs]
+    return jnp.array([f(*xs) for f in fs])
 
 
 def fixed_point(
@@ -48,4 +48,23 @@ def jacobian(fs: NCts) -> List[NCts]:
 
 
 def jacobian_apply(J: List[NCts], xs: Iterable[float]) -> np.matrix:
-    return jnp.array([[f(*xs) for f in row] for row in J])
+    return jnp.array([_ndapply(fs, xs) for fs in J])
+
+
+def newton(fs: NCts, p0: Iterable[float], tol=1e-4, max_iter=15):
+    def succ(ps):
+        xs = ps[-1]
+        J = jacobian_apply(jacobian(fs), xs)
+        F = _ndapply(fs, xs)
+        ys = jnp.linalg.solve(J, F)
+        return xs - ys
+
+    return general_iter_method(
+        succ,
+        p0,
+        tol,
+        max_iter,
+        _converged,
+        method="Newton's Method",
+        return_all=True,
+    )
