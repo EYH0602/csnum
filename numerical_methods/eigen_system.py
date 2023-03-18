@@ -26,7 +26,7 @@ def power_method(
     max_iter: int = 100000000,
     thresh: float = 1e-4,
     return_all=False,
-) -> Result[EigenPair | List[EigenPair], Tuple[str, np.ndarray]]:
+) -> Result[List[EigenPair], Tuple[str, np.ndarray]]:
     """Power Method to approximate the dominate eigenvalue and eigenvector
 
     Args:
@@ -79,9 +79,15 @@ def inverse_power_method(
         case Nothing:
             return Failure(("LU Factorization failed", x))
 
-    def inv_power_eig(p):
-        mu, x = p[-1] if return_all else p
-        return (1 / mu + q, x)
+    def inv_power_eig(rnt):
+        def transform(p):
+            mu, x = p
+            return (1 / mu + q, x)
+
+        if return_all:
+            return list(map(transform, rnt))
+        else:
+            return transform(rnt)
 
     return map_(inv_power_eig)(
         power_method(
