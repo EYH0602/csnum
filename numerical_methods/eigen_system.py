@@ -16,13 +16,17 @@ def _select_idx(x: np.ndarray) -> int:
     return np.min(np.where(np.isclose(x_abs, norm))[0])
 
 
+EigenPair = Tuple[float, np.ndarray]
+
+
 def power_method(
     A: np.matrix,
     x: np.ndarray,
     update: Callable[[np.matrix, np.ndarray], np.ndarray] = np.matmul,
     max_iter: int = 100000000,
     thresh: float = 1e-4,
-) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
+    return_all=False,
+) -> Result[EigenPair | List[EigenPair], Tuple[str, np.ndarray]]:
     """Power Method to approximate the dominate eigenvalue and eigenvector
 
     Args:
@@ -37,6 +41,7 @@ def power_method(
     """
 
     p = _select_idx(x)
+    all_p: List[EigenPair] = []
     x = x / x[p, 0]
     for _ in range(max_iter):
         y = update(A, x)
@@ -49,8 +54,11 @@ def power_method(
 
         err = np.linalg.norm(x - (y / y[p, 0]), ord=np.inf)
         x = y / y[p, 0]
+
+        if return_all:
+            all_p.append((mu, x))
         if err < thresh:
-            return Success((mu, x))
+            return Success(all_p) if return_all else Success((mu, x))
 
     # not converged
     return Failure(("The maximum number of iterations exceeded", x))
@@ -62,6 +70,7 @@ def inverse_power_method(
     max_iter: int = 10000,
     thresh: float = 1e-4,
     q: float = 0,
+    return_all=False,
 ) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
 
     match lu_factorization(A - q * np.eye(A.shape[0])):
@@ -71,11 +80,18 @@ def inverse_power_method(
             return Failure(("LU Factorization failed", x))
 
     def inv_power_eig(p):
-        mu, x = p
+        mu, x = p[-1] if return_all else p
         return (1 / mu + q, x)
 
     return map_(inv_power_eig)(
-        power_method(A, x, update=inv_power_update, max_iter=max_iter, thresh=thresh),
+        power_method(
+            A,
+            x,
+            update=inv_power_update,
+            max_iter=max_iter,
+            thresh=thresh,
+            return_all=return_all,
+        ),
     )
 
 
