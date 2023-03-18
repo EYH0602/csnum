@@ -26,7 +26,7 @@ def power_method(
     max_iter: int = 100000000,
     thresh: float = 1e-4,
     return_all=False,
-) -> Result[List[EigenPair], Tuple[str, np.ndarray]]:
+) -> Result[EigenPair | List[EigenPair], Tuple[str, np.ndarray]]:
     """Power Method to approximate the dominate eigenvalue and eigenvector
 
     Args:
@@ -71,7 +71,7 @@ def inverse_power_method(
     thresh: float = 1e-4,
     q: float = 0,
     return_all=False,
-) -> Result[Tuple[float, np.ndarray], Tuple[str, np.ndarray]]:
+) -> Result[EigenPair | List[EigenPair], Tuple[str, np.ndarray]]:
 
     match lu_factorization(A - q * np.eye(A.shape[0])):
         case Some((L, U)):
