@@ -51,8 +51,9 @@ def jacobian_apply(J: List[NCts], xs: Iterable[float]) -> np.matrix:
     return jnp.array([_ndapply(fs, xs) for fs in J])
 
 
-def newton(fs: NCts, p0: Iterable[float], tol=1e-4, max_iter=15):
-    Jf = jacobian(fs)
+def newton(fs: NCts, p0: Iterable[float], tol=1e-4, max_iter=15, Jf=None):
+    if Jf is None:
+        Jf = jacobian(fs)
 
     def succ(ps):
         xs = ps[-1]
