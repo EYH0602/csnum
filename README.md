@@ -1,4 +1,4 @@
-# Numerical Methods
+# csnum
 
 ## Requirements
 
@@ -9,9 +9,12 @@
 pip3 install -r requirements.txt
 ```
 
-## Build Code Report
+## Install
 
+```sh
+pip3 install csnum
 ```
-cd doc
-make report[1-5]
-```
+
+## Usage
+
+see [doc](doc/README.md)
