@@ -1,12 +1,11 @@
 import numpy as np
 from numpy.linalg import norm
-from typing import Tuple, List, Callable, Union
-from returns.maybe import Maybe, Some, Nothing
+from typing import Tuple, Callable, Union
 
 from csnum.linear_direct_methods import lu_factorization, lu_solve
 
 
-def _converged(curr: np.ndarray, prev: np.ndarray, thresh: float) -> bool:
+def _converged(curr: np.ndarray, prev: np.ndarray, thresh: float):
     return norm(curr - prev, ord=np.inf) / norm(curr, ord=np.inf) <= thresh
 
 
@@ -90,22 +89,23 @@ def sor(
     return general_iter_method(succ, x0, max_iter, thresh, return_iter)
 
 
-def lu_refinement(
+def refinement(
     A: np.matrix,
     b: np.ndarray,
+    factorization=lu_factorization,
     max_iter: int = 10,
     thresh: float = 1e-8,
     return_iter: bool = False,
-) -> Maybe[Union[Tuple[np.ndarray, int], np.ndarray]]:
-    match lu_factorization(A):
-        case Some((L, U)):
-            xk = lu_solve(L, U, b)
+):
+    def refine(p: Tuple[np.ndarray, np.ndarray]):
+        L, U = p
+        xk = lu_solve(L, U, b)
 
-            def succ(xk):
-                r = b - A @ xk
-                y = lu_solve(L, U, r)
-                return xk + y
+        def succ(xk):
+            r = b - A @ xk
+            y = lu_solve(L, U, r)
+            return xk + y
 
-            return Some(general_iter_method(succ, xk, max_iter, thresh, return_iter))
-        case Nothing:
-            return Nothing
+        return general_iter_method(succ, xk, max_iter, thresh, return_iter)
+
+    return factorization(A).map(refine)

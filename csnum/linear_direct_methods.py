@@ -1,9 +1,10 @@
 import numpy as np
 from returns.maybe import Maybe, Nothing, Some
+from returns.result import Result, Success, Failure
 from typing import Tuple
 
 
-def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
+def _select_p(A: np.ndarray, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
     """compute p for gaussian elimination
 
     Args:
@@ -12,7 +13,7 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
         pivot (str): pivot policy
 
     Returns:
-        Maybe[int]: p
+        Maybe[Tuple[int, int]]: p
     """
     xs = A[i:, i]
     p = i + 1
@@ -25,18 +26,18 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
             # if no integer p can be found
             if len(idx) == 0:
                 return Nothing
-            p = np.min(idx) + i  # NOTE i is the offset
+            p = min(idx) + i  # NOTE i is the offset
         case "partial":
             # find max entry
-            p = np.argmax(xs) + i
+            p = np.argmax(xs, axis=0) + i
         case "scaled_partial":
             s = np.max(np.abs(A[i, :]))  # scale factor
             if s == 0:
-                return None
-            p = np.argmax(xs / s) + i
+                return Nothing
+            p = int(np.argmax(xs / s)) + i
         case "complete":
             A_sub = A[i:, i:]
-            p, q = np.unravel_index(np.argmax(A_sub), A_sub.shape)
+            p, q = np.unravel_index(np.argmax(A_sub), A_sub.shape)  # type: ignore
             p += i
             q += i - 1
         case _:
@@ -46,20 +47,21 @@ def _select_p(A: np.matrix, i: int, pivot: str) -> Maybe[Tuple[int, int]]:
 
 
 def gaussian_elimination(
-    A: np.matrix, pivot: str = "none"
-) -> Maybe[Tuple[np.matrix, np.matrix]]:
-    """Gaussian Elimination without backward substitution
+    A: np.ndarray, pivot: str = "none"
+) -> Result[Tuple[np.ndarray, np.ndarray], str]:
+    """_summary_
+
     Args:
-        A (np.matrix): matrix to do gaussian elimination
+        A (np.ndarray): matrix to do gaussian elimination
         pivot (str, optional): pivot policy in ["none", "partial", "scaled_partial", "complete"].
-            Defaults to "none".
+        Defaults to "none".
 
     Returns:
-        Maybe[Tuple[np.matrix, np.matrix]]: (elimination result, multipliers used)
+        Result[Tuple[np.ndarray, np.ndarray], str]: (elimination result, multipliers used) or a failure message
     """
 
     if A is None:
-        return Nothing
+        return Failure("A is None")
 
     A = np.ndarray.copy(A)
     n = A.shape[0]
@@ -75,10 +77,10 @@ def gaussian_elimination(
                 p = next_p
                 q = next_q
             case Nothing:
-                return Nothing
+                return Failure("Factorization impossible")
         # no unique solution
         if A[p, i] == 0:
-            return Nothing
+            return Failure("Factorization impossible")
         # swap row
         if i != p:
             A[[p, i]] = A[[i, p]]
@@ -93,17 +95,17 @@ def gaussian_elimination(
 
     # no unique solution
     if A[-1, -1] == 0:
-        return Nothing
+        return Failure("A is singular")
 
-    return Some((A, m))
+    return Success((A, m))
 
 
-def back_substitution(A: np.matrix, b: np.array) -> np.array:
+def back_substitution(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     """back substitution step of gaussian elimination,
     this is assumed to be used upon success of `gaussian_elimination`
 
     Args:
-        mat (np.matrix): matrix from result of gaussian elimination
+        mat (np.ndarray): matrix from result of gaussian elimination
 
     Returns:
         np.array: solved values
@@ -119,12 +121,12 @@ def back_substitution(A: np.matrix, b: np.array) -> np.array:
     return x
 
 
-def forward_substitution(A: np.matrix, b: np.array) -> np.array:
+def forward_substitution(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     """forward substitution step,
     this is assumed to be used upon success of `gaussian_elimination`
 
     Args:
-        mat (np.matrix): a square matrix
+        mat (np.ndarray): a square matrix
 
     Returns:
         np.array: solved values
@@ -140,24 +142,24 @@ def forward_substitution(A: np.matrix, b: np.array) -> np.array:
     return x
 
 
-def lu_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
+def lu_factorization(A: np.ndarray) -> Result[Tuple[np.ndarray, np.ndarray], str]:
     """LU factorization
 
     Args:
         A (np.matrix): square matrix to factorize
 
     Returns:
-        Maybe[Tuple[np.matrix, np.matrix]]: (U, L)
+        Result[Tuple[np.ndarray, np.ndarray], str]: (L, U)
     """
     if A is None:
-        return Nothing
+        return Failure("A is None")
     # only decompose square matrix
     if A.shape[0] != A.shape[1]:
-        return Nothing
+        return Failure("A is not square matrix")
     return gaussian_elimination(A, pivot="none").map(lambda p: p[::-1])
 
 
-def gauss_solve(A: np.matrix, b: np.array, pivot: str = "none") -> Maybe[np.array]:
+def gauss_solve(A: np.ndarray, b: np.ndarray, pivot: str = "none"):
     """solve linear system Ax = b by gaussian elimination and back substitution.
     result depends on the success of gaussian_elimination
 
@@ -169,14 +171,14 @@ def gauss_solve(A: np.matrix, b: np.array, pivot: str = "none") -> Maybe[np.arra
 
 
     Returns:
-        Maybe[np.array]: result
+        Result[np.array, str]: result or failure message
     """
     return gaussian_elimination(np.hstack((A, b)), pivot=pivot).map(
         lambda p: back_substitution(p[0][:, :-1], p[0][:, [-1]])
     )
 
 
-def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
+def lu_solve(L: np.ndarray, U: np.ndarray, b: np.ndarray) -> np.ndarray:
     """solve linear system with output from LU factorization
     this is assumed to be used upon the succuss of `lu_factorization`
 
@@ -193,11 +195,11 @@ def lu_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
     return x
 
 
-def is_positive_definite(x: np.matrix) -> bool:
-    return np.all(np.linalg.eigvals(x) > 0)
+def is_positive_definite(x: np.ndarray) -> bool:
+    return all(np.linalg.eigvals(x) > 0)
 
 
-def ldl_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
+def ldl_factorization(A: np.ndarray) -> Result[Tuple[np.ndarray, np.ndarray], str]:
     """ldl factorization
 
     Args:
@@ -207,9 +209,9 @@ def ldl_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
         Maybe[Tuple[np.matrix, np.matrix]]: L, D
     """
     if A is None:
-        return Nothing
+        return Failure("A is None")
     if not is_positive_definite(A):
-        return Nothing
+        return Failure("A is not positive definite")
 
     n = A.shape[0]
     L = np.identity(n)
@@ -226,18 +228,18 @@ def ldl_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
 
     D = np.zeros(shape=A.shape)
     np.fill_diagonal(D, d)
-    return Some((L, D))
+    return Success((L, D))
 
 
-def cholesky_factorization(A: np.matrix) -> Maybe[np.matrix]:
-    def decomp_D(ms: Tuple[np.matrix, np.matrix]) -> np.matrix:
+def cholesky_factorization(A: np.ndarray):
+    def decomp_D(ms: Tuple[np.ndarray, np.ndarray]) -> np.ndarray:
         L, D = ms
         return L @ np.power(D, 1 / 2)
 
     return ldl_factorization(A).map(decomp_D)
 
 
-def tridiag_ones(n: int) -> np.matrix:
+def tridiag_ones(n: int) -> np.ndarray:
     """get a tridiagonal matrix with only 1s
 
     Args:
@@ -254,23 +256,23 @@ def tridiag_ones(n: int) -> np.matrix:
 
 def is_tridiag(A: np.matrix) -> bool:
     B = tridiag_ones(A.shape[0])
-    return np.all(np.where(A == 0)[0] == np.where(B == 0)[0])
+    return all(np.where(A == 0)[0] == np.where(B == 0)[0])
 
 
-def crout_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
+def crout_factorization(A: np.matrix) -> Result[Tuple[np.ndarray, np.ndarray], str]:
     """Crout Factorization for Tridiagonal Linear Systems
 
     Args:
-        A (np.matrix): Tridiagonal square matrix
+        A (np.ndarray): Tridiagonal square matrix
 
     Returns:
-        Maybe[Tuple[np.matrix, np.matrix]]: (L, U)
+        Maybe[Tuple[np.ndarray, np.ndarray]]: (L, U)
     """
     if A.shape[0] != A.shape[1]:
-        return Nothing
+        return Failure("A is not square matrix")
 
     if not is_tridiag(A):
-        return Nothing
+        return Failure("A is not tridiagonal matrix")
 
     n = A.shape[0]
     L = np.zeros(shape=A.shape)
@@ -287,10 +289,10 @@ def crout_factorization(A: np.matrix) -> Maybe[Tuple[np.matrix, np.matrix]]:
     L[-1, -2] = A[-1, -2]
     L[-1, -1] = A[-1, -1] - L[-1, -2] * U[-2, -1]
 
-    return Some((L, U))
+    return Success((L, U))
 
 
-def crout_solve(L: np.matrix, U: np.matrix, b: np.array) -> np.array:
+def crout_solve(L: np.matrix, U: np.matrix, b: np.ndarray) -> np.ndarray:
     """solve for Crout Factorization
 
     Args:
