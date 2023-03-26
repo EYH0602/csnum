@@ -15,7 +15,7 @@ def rand_mat(n=50):
     return A
 
 
-class TestRoot1Var(unittest.TestCase):
+class TestEigenSystem(unittest.TestCase):
     def test_power_method(self):
         A = np.array([[-2, -3], [6, 7]])
         x0 = np.array([[1, 1]]).T
