@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from numerical_methods.linear_iter_methods import (
+from csnum.linear_iter_methods import (
     jacobi,
     gauss_seidel,
     sor,

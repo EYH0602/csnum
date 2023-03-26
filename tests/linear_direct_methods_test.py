@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from numerical_methods.linear_direct_methods import (
+from csnum.linear_direct_methods import (
     gaussian_elimination,
     lu_factorization,
     back_substitution,

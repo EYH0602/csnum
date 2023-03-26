@@ -3,7 +3,7 @@ from numpy.linalg import norm
 from typing import Tuple, List, Callable, Union
 from returns.maybe import Maybe, Some, Nothing
 
-from numerical_methods.linear_direct_methods import lu_factorization, lu_solve
+from csnum.linear_direct_methods import lu_factorization, lu_solve
 
 
 def _converged(curr: np.ndarray, prev: np.ndarray, thresh: float) -> bool:

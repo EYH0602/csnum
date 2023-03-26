@@ -1,6 +1,6 @@
 import unittest
 import jax.numpy as jnp
-from numerical_methods.root_finding_1_var import (
+from csnum.root_finding_1_var import (
     steffensen,
     fixed_point,
     newton,

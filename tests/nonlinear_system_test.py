@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from numerical_methods.nonlinear_system import (
+from csnum.nonlinear_system import (
     fixed_point,
     jacobian,
     jacobian_apply,

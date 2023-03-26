@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from returns.result import Result, Success, Failure
 
-from numerical_methods.eigen_system import (
+from csnum.eigen_system import (
     power_method,
     inverse_power_method,
     wielandt_deflation,
