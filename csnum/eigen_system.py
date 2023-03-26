@@ -4,7 +4,7 @@ from returns.result import Result, Success, Failure
 from returns.maybe import Maybe, Nothing, Some
 from returns.pointfree import map_
 
-from numerical_methods.linear_direct_methods import lu_factorization, lu_solve
+from csnum.linear_direct_methods import lu_factorization, lu_solve
 
 
 def _select_idx(x: np.ndarray) -> int:
