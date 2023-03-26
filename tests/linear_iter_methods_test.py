@@ -5,7 +5,7 @@ from csnum.linear_iter_methods import (
     jacobi,
     gauss_seidel,
     sor,
-    lu_refinement,
+    refinement,
 )
 
 
@@ -58,7 +58,7 @@ class TestLinearIter(unittest.TestCase):
         for _ in range(10):
             A, b = generate_random(50)
 
-            x_refine = lu_refinement(A, b, max_iter=20).unwrap()
+            x_refine = refinement(A, b, max_iter=20).unwrap()
             self.assertTrue(np.allclose(np.linalg.solve(A, b), x_refine))
 
 
