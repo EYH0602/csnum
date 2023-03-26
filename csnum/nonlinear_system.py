@@ -4,7 +4,7 @@ import numpy as np
 from typing import Callable, List, Optional, Iterable
 from inspect import signature
 
-from csnum.root_finding_1_var import general_iter_method
+from csnum.nonlinear_eqn import general_iter_method
 
 
 # G : R^n -> R^n
