@@ -7,7 +7,7 @@ from returns.pointfree import map_
 from csnum.linear_direct_methods import lu_factorization, lu_solve
 
 
-def _select_idx(x: np.ndarray) -> int:
+def _select_idx(x: np.ndarray):
     """
     Find the smallest integer p with 1 <= p  <= n and |x_p| = ||x||_inf
     """
@@ -130,16 +130,16 @@ def wielandt_deflation(
             for j in range(i, n - 1):
                 B[k, j] = A[k + 1, j + 1] - A[i, j + 1] * v[k + 1] / v[i]
 
-    match solver(B, x, max_iter=max_iter, thresh=thresh):
-        case Success((mu, wp)):
-            w = np.zeros(shape=v.shape)
-            u = np.zeros(shape=v.shape)
-            if i != 0:
-                w[:i] = wp[:i]
-            if i != n - 1:
-                w[i + 1 :] = wp[i:]
-            for k in range(n):
-                u[k] = (mu - l) * w[k] + (A[i, :] @ w) * v[k] / v[i]
-            return Success((mu, u))
-        case Failure((msg, _)):
-            return Failure(f"{solver.__name__} fails: {msg}")
+    def deflation(p):
+        mu, wp = p
+        w = np.zeros(shape=v.shape)
+        u = np.zeros(shape=v.shape)
+        if i != 0:
+            w[:i] = wp[:i]
+        if i != n - 1:
+            w[i + 1 :] = wp[i:]
+        for k in range(n):
+            u[k] = (mu - l) * w[k] + (A[i, :] @ w) * v[k] / v[i]
+        return (mu, u)
+
+    return solver(B, x, max_iter=max_iter, thresh=thresh).map(deflation)
