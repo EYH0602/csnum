@@ -19,7 +19,7 @@ def test_res(xs):
     return jnp.abs(xs[-1] - root) <= threshold
 
 
-class TestRoot1Var(unittest.TestCase):
+class TestNonlinearEqn(unittest.TestCase):
     def test_fixed_point(self):
         def g(x):
             return x - (x**3 + 4 * x**2 - 10) / (3 * x**2 + 8 * x)

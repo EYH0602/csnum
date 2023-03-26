@@ -15,7 +15,7 @@ def generate_random(n):
     return A, b
 
 
-class TestRoot1Var(unittest.TestCase):
+class TestLinearIter(unittest.TestCase):
     def test_jacobi(self):
         for _ in range(10):
             A, b = generate_random(50)

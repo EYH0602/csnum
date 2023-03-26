@@ -14,7 +14,7 @@ from csnum.linear_direct_methods import (
 )
 
 
-class TestRoot1Var(unittest.TestCase):
+class TestLinearDirect(unittest.TestCase):
     def test_gaussian_elimination_none(self):
         A = np.array([[2, 4, 5], [7, 6, 5], [9, 11, 3]], dtype=float)
         a, m = gaussian_elimination(A).unwrap()
