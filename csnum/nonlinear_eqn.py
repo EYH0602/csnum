@@ -1,6 +1,6 @@
 import jax.numpy as jnp
 from jax import grad
-from typing import Tuple, Callable, Dict, List, TypeVar
+from typing import Tuple, Callable, Dict, List, TypeVar, Optional
 from logging import warning
 
 
@@ -49,22 +49,24 @@ def general_iter_method(
     converged: Callable[[Calcable, Calcable, float], bool],
     method: str = "",
     return_all=True,
-):
+) -> List[Calcable] | Calcable:
     """General Iterative Method (gim)
 
     Args:
-        succ (Callable[List[float], float]):
+        succ (Callable[[List[Calcable]], Calcable]):
             compute the new approximation p from previous approximations
-        p0 (float): initial approximation
+        p0 (Calcable): initial approximation
         tol (float): tolerance
-        max_iter (int):
-            maximum number of iterations;
+        max_iter (int): maximum number of iterations;
             if converged before this, pad with the root it finds
-        method (str, optional): method name that is calling gim
+        converged (Callable[[Calcable, Calcable, float], bool]): how to decide if two approximations are close enough
+        method (str, optional): method name that is calling gim. Defaults to "".
+        return_all (bool, optional): return all used approximation. Defaults to True.
 
     Returns:
-        List[float]: the sequence of approximations used by the method
+        List[Calcable] | Calcable: all the approximations or the last approximation
     """
+
     p: List[Calcable] = []
     p.append(p0)
     for i in range(1, max_iter):
@@ -77,14 +79,19 @@ def general_iter_method(
     return p if return_all else p[-1]
 
 
-def fixed_point(f: Cts, p0: float, tol=1e-4, max_iter=15, g: Cts = None):
+def fixed_point(f: Cts, p0: float, tol=1e-4, max_iter=15, g: Optional[Cts] = None):
     p0 = float(p0)
-    if g is None:
-        # f(x) = 0 --> g(x) = x
-        g = lambda x: x - f(x)
+
+    # f(x) = 0 --> g(x) = x
+    succ: Cts = g if g else lambda x: x - f(x)
 
     return general_iter_method(
-        lambda ps: g(ps[-1]), p0, tol, max_iter, _converged, method="Fixed Point Method"
+        lambda ps: succ(ps[-1]),
+        p0,
+        tol,
+        max_iter,
+        _converged,
+        method="Fixed Point Method",
     )
 
 
@@ -119,7 +126,7 @@ def secant(f: Cts, p: Tuple[float, float], eps=1e-4, max_iter=15):
     )
 
 
-def steffensen(f: Cts, p: float, tol=1e-4, max_iter=15, g: Cts = None):
+def steffensen(f: Cts, p: float, tol=1e-4, max_iter=15, g: Optional[Cts] = None):
     if g is None:
         g = lambda x: x - f(x)
 
